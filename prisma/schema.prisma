@@ -9,75 +9,76 @@ datasource db {
 }
 
 model User {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   createdAt DateTime @default(now())
   firstName String
   lastName String
   displayName String
   email String
-  uid Int
+  uid String
   photoUrl String
+
 
 }
 
 model Trip {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   createdAt DateTime @default(now())
-  userId Int
+  userId String 
   startDate DateTime
   endDate DateTime
   name String
 }
 
 model TripActivity {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   createdAt DateTime @default(now())
-  activityId Int
-  tripId Int
+  activityId String
+  tripId String
   day String
 }
 
 model FavoriteActivity {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   createdAt DateTime @default(now())
-  activityId Int
-  userId Int
-  TripId Int?
+  activityId String
+  userId String
+  TripId String?
 }
 
 model Acomodation {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   createdAt DateTime @default(now())
   locationId Int
   startDate DateTime
   endDate DateTime
-  tripId Int
+  tripId String
 }
 
 model TravelEvent {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   createdAt DateTime @default(now())
   type Int
   departure DateTime
   arrival DateTime
   origin String
   destination String
-  tripId Int
+  tripId String
 }
 
 model Activity {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   createdAt DateTime @default(now())
   name String
   duration Float
   description String
   time DateTime?
   rating Int?
-  locationId Int
+  locationId String
 }
 
 model Location {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   createdAt DateTime @default(now())
   latitude Float
   longitude Float
@@ -85,15 +86,15 @@ model Location {
   state String
   locationName String
   city String
-  googleId Int?
+  googleId String?
 }
 model ActivityTag {
-  id Int @id @default(autoincrement())
-  activityId Int
-  tagId Int
+  id String @id @default(cuid())
+  activityId String
+  tagId String
 }
 model Tag {
-  id Int @id @default(autoincrement())
+  id String @id @default(cuid())
   tag String
 }
 
