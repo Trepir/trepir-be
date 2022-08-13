@@ -1,0 +1,103 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  firstName String
+  lastName String
+  displayName String
+  email String
+  uid Int
+  photoUrl String
+
+}
+
+model Trip {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  userId Int
+  startDate DateTime
+  endDate DateTime
+  name String
+}
+
+model TripActivity {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  activityId Int
+  tripId Int
+  day String
+}
+
+model FavoriteActivity {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  activityId Int
+  userId Int
+  TripId Int?
+}
+
+model Acomodation {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  locationId Int
+  startDate DateTime
+  endDate DateTime
+  tripId Int
+}
+
+model TravelEvent {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  type Int
+  departure DateTime
+  arrival DateTime
+  origin String
+  destination String
+  tripId Int
+}
+
+model Activity {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  name String
+  duration Float
+  description String
+  time DateTime?
+  rating Int?
+  locationId Int
+}
+
+model Location {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  latitude Float
+  longitude Float
+  country String
+  state String
+  locationName String
+  city String
+  googleId Int?
+}
+model ActivityTag {
+  id Int @id @default(autoincrement())
+  activityId Int
+  tagId Int
+}
+model Tag {
+  id Int @id @default(autoincrement())
+  tag String
+}
+
+
+
+
+
