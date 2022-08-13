@@ -14,7 +14,7 @@ model User {
   firstName String
   lastName String
   displayName String
-  email String
+  email String @unique
   uid String
   photoUrl String
   trips Trip[]
