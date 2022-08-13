@@ -34,3 +34,8 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# Prisma files
+
+prisma/migrations
+src/prisma/prisma.servive.ts
