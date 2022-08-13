@@ -32,7 +32,10 @@ model Trip {
   endDate DateTime
   name String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  favouriteActivities FavoriteActivity[]
+  tripActivities TripActivity[]
+  acomodations Acomodation[]
+  travelEvents TravelEvent[]
 }
 
 model TripActivity {
@@ -41,6 +44,7 @@ model TripActivity {
   activityId String
   tripId String
   day String
+  trip Trip @relation(fields:[tripId], references: [id], onDelete: Cascade)
 }
 
 model FavoriteActivity {
@@ -51,17 +55,32 @@ model FavoriteActivity {
   tripId String?
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-
+  trip Trip? @relation(fields:[tripId], references: [id], onDelete: Cascade)
 
 }
 
 model Acomodation {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
-  locationId Int
+  locationId String @unique
   startDate DateTime
   endDate DateTime
   tripId String
+  trip Trip @relation(fields:[tripId], references: [id], onDelete: Cascade)
+  location Location @relation(fields:[locationId], references: [id], onDelete: Cascade)
+}
+model Location {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  latitude Float
+  longitude Float
+  country String
+  state String
+  locationName String
+  city String
+  googleId String?
+  activity Activity[]
+  acomodation Acomodation?
 }
 
 model TravelEvent {
@@ -73,6 +92,7 @@ model TravelEvent {
   origin String
   destination String
   tripId String
+  trip Trip @relation(fields:[tripId], references: [id], onDelete: Cascade)
 }
 
 model Activity {
@@ -92,18 +112,7 @@ model Activity {
 
 }
 
-model Location {
-  id String @id @default(cuid())
-  createdAt DateTime @default(now())
-  latitude Float
-  longitude Float
-  country String
-  state String
-  locationName String
-  city String
-  googleId String?
-  activity Activity[]
-}
+
 model ActivityTag {
   id String @id @default(cuid())
   activityId String
