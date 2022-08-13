@@ -17,6 +17,9 @@ model User {
   email String
   uid String
   photoUrl String
+  trips Trip[]
+  favoriteActivities FavoriteActivity[]
+  activities Activity[]
 
 
 }
@@ -28,6 +31,8 @@ model Trip {
   startDate DateTime
   endDate DateTime
   name String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 }
 
 model TripActivity {
@@ -43,7 +48,11 @@ model FavoriteActivity {
   createdAt DateTime @default(now())
   activityId String
   userId String
-  TripId String?
+  tripId String?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+
 }
 
 model Acomodation {
@@ -75,6 +84,12 @@ model Activity {
   time DateTime?
   rating Int?
   locationId String
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  tags ActivityTag[]
+  creatorId String
+  creator User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  favoriteActivities FavoriteActivity[]
+
 }
 
 model Location {
@@ -87,15 +102,19 @@ model Location {
   locationName String
   city String
   googleId String?
+  activity Activity[]
 }
 model ActivityTag {
   id String @id @default(cuid())
   activityId String
   tagId String
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
 }
 model Tag {
   id String @id @default(cuid())
   tag String
+  activities ActivityTag[]
 }
 
 
