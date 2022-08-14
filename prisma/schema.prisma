@@ -15,7 +15,7 @@ model User {
   lastName String
   displayName String
   email String
-  uid String
+  uid String @unique
   photoUrl String
   trips Trip[]
   favoriteActivities FavoriteActivity[]
@@ -78,7 +78,7 @@ model Location {
   state String
   locationName String
   city String
-  googleId String?
+  googleId String? @unique
   activity Activity[]
   acomodation Acomodation?
 }
@@ -105,7 +105,7 @@ model Activity {
   rating Int?
   locationId String
   location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  tags ActivityTag[]
+  tags Tag[]
   creatorId String
   creator User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   favoriteActivities FavoriteActivity[]
@@ -113,20 +113,28 @@ model Activity {
 }
 
 
-model ActivityTag {
-  id String @id @default(cuid())
-  activityId String
-  tagId String
-  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-  tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+// model ActivityTag {
+//   id String @id @default(uuid())
+//   activityId String
+//   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+//   tag Tag
+// }
+
+
+enum Tag {
+  Relax
+  Landmark
+  Entretaintment
+  Drinks
+  Restaurant
+  Adventure  
+  Museum
+  Outdoors
+  Tour
+  Beach
+  Culture
+  Nightlife
+  Nature
+  Festivity
 }
-model Tag {
-  id String @id @default(cuid())
-  tag String
-  activities ActivityTag[]
-}
-
-
-
-
 
