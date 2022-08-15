@@ -13,6 +13,7 @@ export class AuthService {
 				lastName: userDto.lastName,
 				displayName: userDto.displayName,
 				photoUrl: userDto.photoUrl,
+				emailVerified: userDto.emailVerified,
 			},
 		});
 		delete user.uid;
