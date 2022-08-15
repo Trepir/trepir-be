@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, IsDate, IsArray } from 'class-validator';
+import {
+	IsNotEmpty,
+	IsString,
+	IsDate,
+	IsArray,
+	IsNumber,
+} from 'class-validator';
 
 export class TripDto {
 	@IsString()
@@ -13,9 +19,27 @@ export class TripDto {
 	@IsString()
 	@IsNotEmpty()
 	name: string;
+	@IsNumber()
+	@IsNotEmpty()
+	longitude: number;
+	@IsNumber()
+	@IsNotEmpty()
+	latitude: number;
+	@IsString()
+	@IsNotEmpty()
+	place_Id: string;
 }
 
 export class updateTripDto {
+	@IsNotEmpty()
+	@IsDate()
+	startDate: Date;
+	@IsNotEmpty()
+	@IsDate()
+	endDate: Date;
+	@IsNotEmpty()
+	@IsString()
+	id: string;
 	@IsString()
 	@IsNotEmpty()
 	uid: string;
