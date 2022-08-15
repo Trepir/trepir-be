@@ -36,7 +36,7 @@ export class ActivityService {
 							},
 						},
 					},
-					tags: {},
+					tags: dto.tags,
 
 					creator: {
 						connect: {
@@ -45,8 +45,18 @@ export class ActivityService {
 					},
 				},
 			});
+
+			delete activity.id;
+			delete activity.creatorId;
+
+			return activity;
 		} catch (e) {
 			console.log(e);
 		}
+	}
+
+	async all() {
+		const activities = await this.prisma.activity.findMany();
+		return activities;
 	}
 }
