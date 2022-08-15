@@ -38,3 +38,5 @@ lerna-debug.log*
 # Prisma files
 
 prisma/migrations
+
+.eslintcache
