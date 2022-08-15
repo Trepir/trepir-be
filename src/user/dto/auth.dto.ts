@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsBoolean } from 'class-validator';
 
 export class AuthDto {
 	@IsString()
@@ -28,4 +28,7 @@ export class UserDto {
 	@IsNotEmpty()
 	@IsString()
 	photoUrl: string;
+	@IsNotEmpty()
+	@IsBoolean()
+	emailVerified: boolean;
 }

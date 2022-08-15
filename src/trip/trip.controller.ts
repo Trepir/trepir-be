@@ -8,6 +8,6 @@ export class TripController {
 	@Post('create')
 	signup(@Body() tripDto: TripDto) {
 		//dto:data transfer object
-		return this.tripService.create(tripDto);
+		// return this.tripService.create(tripDto);
 	}
 }

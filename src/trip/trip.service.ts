@@ -5,8 +5,18 @@ import { TripDto } from './dto';
 export class TripService {
 	constructor(private prisma: PrismaService) {}
 	async create(tripDto: TripDto) {
+		const currentUser = await this.prisma.user.findUnique({
+			where: {
+				uid: tripDto.uid,
+			},
+		});
 		const trip = await this.prisma.trip.create({
-			data: {},
+			data: {
+				userId: tripDto.uid,
+				startDate: tripDto.startDate,
+				endDate: tripDto.endDate,
+				name: tripDto.name,
+			},
 		});
 	}
 }
