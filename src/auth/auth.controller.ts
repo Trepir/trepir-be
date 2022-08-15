@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
-import { UserService } from './user.service';
+import { AuthService } from './auth.service';
 import { AuthDto, UserDto } from './dto';
 
-@Controller('user')
+@Controller('auth')
 export class AuthController {
-	constructor(private authService: UserService) {}
+	constructor(private authService: AuthService) {}
 	@Post('signup')
 	signup(@Body() userDto: UserDto) {
 		//dto:data transfer object

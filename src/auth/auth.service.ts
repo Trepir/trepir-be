@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDto } from './dto';
 @Injectable()
-export class UserService {
+export class AuthService {
 	constructor(private prisma: PrismaService) {}
 	async signup(userDto: UserDto) {
 		const user = await this.prisma.user.create({
