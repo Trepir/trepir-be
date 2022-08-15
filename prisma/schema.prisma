@@ -33,9 +33,9 @@ model Trip {
   startDate DateTime
   endDate DateTime
   name String
-  longitude Float
-  latitude Float
-  place_Id String
+  locationId String 
+  location Location @relation(fields:[locationId], references: [id], onDelete: Cascade)
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   favouriteActivities FavoriteActivity[]
   tripDay TripDay[]
@@ -100,10 +100,10 @@ model FavoriteActivity {
 model Acomodation {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
-  locationId String @unique
-  startDate DateTime
-  endDate DateTime
+date DateTime
+state AccomodationState
   eventType EventType @default(Acomodation)
+  locationId String 
   location Location @relation(fields:[locationId], references: [id], onDelete: Cascade)
    tripDayActivityId String?
   tripDayActivity TripDayActivity? @relation()
@@ -119,22 +119,29 @@ model Location {
   locationName String
   city String
   googleId String? @unique
+  travelOrigin TravelEvent[] @relation("travelOrigin")
+  travelDestination TravelEvent[] @relation("travelDestination")
+  trip Trip[] 
 
   activity Activity[]
-  acomodation Acomodation?
+  acomodation Acomodation[]
+
   @@map("locations")
 }
 
 model TravelEvent {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
+  originLocationId String 
+  originLocation Location @relation("travelOrigin",fields:[originLocationId], references: [id], onDelete: Cascade)
+  destinationLocationId String 
+  destinationLocation Location @relation("travelDestination",fields:[destinationLocationId], references: [id], onDelete: Cascade)
   type TravelType
   departure DateTime
-  arrival DateTime
   origin String
-  destination String
+
   eventType EventType @default(TravelEvent)
-   tripDayActivityId String?
+  tripDayActivityId String?
   tripDayActivity TripDayActivity? @relation()
   @@map("travel")
 }
@@ -193,4 +200,9 @@ enum EventType {
   TravelEvent
   Acomodation
   Activity
+}
+
+enum AccomodationState {
+  CheckIn
+  CheckOut
 }

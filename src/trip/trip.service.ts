@@ -10,13 +10,13 @@ export class TripService {
 				uid: tripDto.uid,
 			},
 		});
-		const trip = await this.prisma.trip.create({
-			data: {
-				userId: tripDto.uid,
-				startDate: tripDto.startDate,
-				endDate: tripDto.endDate,
-				name: tripDto.name,
-			},
-		});
+		// const trip = await this.prisma.trip.create({
+		// 	data: {
+		// 		userId: tripDto.uid,
+		// 		startDate: tripDto.startDate,
+		// 		endDate: tripDto.endDate,
+		// 		name: tripDto.name,
+		// 	},
+		// });
 	}
 }

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ActivityDto } from './dto';
+import { ActivityDto, LocationDto } from './dto';
 
 @Injectable()
 export class ActivityService {
 	constructor(private prisma: PrismaService) {}
 
-	async create(dto: ActivityDto) {
+	async create(dto: ActivityDto & LocationDto) {
 		const currentUser = await this.prisma.user.findUnique({
 			where: {
 				uid: dto.uid,
@@ -46,7 +46,6 @@ export class ActivityService {
 				},
 			});
 
-			delete activity.id;
 			delete activity.creatorId;
 
 			return activity;
@@ -56,7 +55,9 @@ export class ActivityService {
 	}
 
 	async all() {
-		const activities = await this.prisma.activity.findMany();
+		const activities = await this.prisma.activity.findMany({
+			include: { location: true },
+		});
 		return activities;
 	}
 }
