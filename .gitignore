@@ -38,4 +38,3 @@ lerna-debug.log*
 # Prisma files
 
 prisma/migrations
-src/prisma/prisma.servive.ts
