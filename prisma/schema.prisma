@@ -33,44 +33,54 @@ model Trip {
   startDate DateTime
   endDate DateTime
   name String
+  longitude Float
+  latitude Float
+  place_Id String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   favouriteActivities FavoriteActivity[]
-  tripByDays TripByDays[]
+  tripDay TripDay[]
+
   @@map("trips")
 }
 
-model TripByDays {
+model TripDay {
 
 id String @id @default(cuid())
-index Int
+dayIndex Int
 tripId String
 trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
-orderedDay OrderedDay[]
+tripDayActivities TripDayActivity[]
 
 }
 
-model OrderedDay {
+model TripDayActivity {
 
-id String @id @default(uuid())
-tripByDayId String
-day TripByDays @relation(fields: [tripByDayId], references: [id], onDelete: Cascade)
-index Int
-  dayActivities DayActivity[]
-  acomodations Acomodation[]
-  travelEvents TravelEvent[]
+id String @id @default(cuid()) 
+tripDayId String
+tripDay TripDay @relation(fields: [tripDayId], references: [id], onDelete: Cascade)
+order Int
+dayActivityId String? @unique
+dayActivity DayActivity? @relation(fields: [dayActivityId], references: [id], onDelete: Cascade)
+acomodationId String? @unique
+acomodation Acomodation? @relation(fields: [acomodationId], references: [id], onDelete: Cascade)
+travelEventId String? @unique
+travelEvent TravelEvent? @relation(fields: [travelEventId], references: [id], onDelete: Cascade)
+
+
+
 }
 
 
 
 model DayActivity {
-  id String @id @default(cuid())
+  id String @id @default(cuid()) @unique
   createdAt DateTime @default(now())
   activityId String
-  time DateTime?
-  tripByOrderedDayId String
-  tripByOrderedDay OrderedDay @relation(fields:[tripByOrderedDayId], references: [id], onDelete: Cascade)
   activity Activity @relation(fields:[activityId], references: [id], onDelete: Cascade)
-
+  time DateTime?
+  tripDayctivityId String?
+  tripDayActivity TripDayActivity? @relation()
+ 
 	
 }
 
@@ -93,9 +103,10 @@ model Acomodation {
   locationId String @unique
   startDate DateTime
   endDate DateTime
-  tripByOrderedDayId String
-  tripByOrderedDay OrderedDay @relation(fields:[tripByOrderedDayId], references: [id], onDelete: Cascade)
+  eventType EventType @default(Acomodation)
   location Location @relation(fields:[locationId], references: [id], onDelete: Cascade)
+   tripDayActivityId String?
+  tripDayActivity TripDayActivity? @relation()
   @@map("acomodations")
 }
 model Location {
@@ -108,6 +119,7 @@ model Location {
   locationName String
   city String
   googleId String? @unique
+
   activity Activity[]
   acomodation Acomodation?
   @@map("locations")
@@ -121,8 +133,9 @@ model TravelEvent {
   arrival DateTime
   origin String
   destination String
-  tripByOrderedDayId String
-  tripByOrderedDay OrderedDay @relation(fields:[tripByOrderedDayId], references: [id], onDelete: Cascade)
+  eventType EventType @default(TravelEvent)
+   tripDayActivityId String?
+  tripDayActivity TripDayActivity? @relation()
   @@map("travel")
 }
 
@@ -141,6 +154,7 @@ model Activity {
   creator User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   favoriteActivities FavoriteActivity[]
   dayActivities DayActivity[]
+  eventType EventType @default(Activity)
 
   @@map("activities")
 }
@@ -172,4 +186,11 @@ enum TravelType {
   Boat
   Car
   Train
+}
+
+
+enum EventType {
+  TravelEvent
+  Acomodation
+  Activity
 }
