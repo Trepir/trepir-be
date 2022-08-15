@@ -38,4 +38,6 @@ lerna-debug.log*
 # Prisma files
 
 prisma/migrations
-src/prisma/prisma.service.ts
+.eslintcache
+
+
