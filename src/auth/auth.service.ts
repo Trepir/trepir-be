@@ -15,6 +15,9 @@ export class AuthService {
 				photoUrl: userDto.photoUrl,
 			},
 		});
+		delete user.uid;
+		delete user.id;
+		return user;
 	}
 	async signin(userDto: UserDto) {
 		const user = await this.prisma.user.findFirst({
@@ -24,6 +27,8 @@ export class AuthService {
 		});
 		if (!user) throw new ForbiddenException('Credentials incorrect');
 		//verify password??
+		delete user.uid;
+		delete user.id;
 		return user;
 	}
 }
