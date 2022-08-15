@@ -12,10 +12,9 @@ import { ConfigModule } from '@nestjs/config';
 		UserModule,
 		PrismaModule,
 		ActivityModule,
-    AuthModule, 
-    TripModule,
+		AuthModule,
+		TripModule,
 		ConfigModule.forRoot({ isGlobal: true }),
 	],
-
 })
 export class AppModule {}

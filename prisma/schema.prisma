@@ -17,6 +17,7 @@ model User {
   email String @unique
   uid String @unique
   photoUrl String
+  emailVerified Boolean
   trips Trip[]
   favoriteActivities FavoriteActivity[]
   activities Activity[]
@@ -165,3 +166,10 @@ enum Tag {
   @@map("tags")
 }
 
+enum TravelType {
+  Flight
+  Bus
+  Boat
+  Car
+  Train
+}
