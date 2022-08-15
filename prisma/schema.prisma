@@ -116,7 +116,7 @@ model Location {
 model TravelEvent {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
-  type Int
+  type TravelType
   departure DateTime
   arrival DateTime
   origin String
