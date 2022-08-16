@@ -10,8 +10,8 @@ export class TripController {
 		//dto:data transfer object
 		return this.tripService.create(tripDto);
 	}
-	@Put('update')
-	update(@Body() tripDto: updateTripDto) {
-		return this.tripService.update(tripDto);
-	}
+	// @Put('update')
+	// update(@Body() tripDto: updateTripDto) {
+	// 	return this.tripService.update(tripDto);
+	// }
 }

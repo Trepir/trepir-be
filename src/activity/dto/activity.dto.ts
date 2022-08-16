@@ -30,8 +30,11 @@ export class ActivityDto {
 }
 
 export class LocationDto {
+	@IsNotEmpty()
+	@IsNumber()
 	latitude: number;
-
+	@IsNotEmpty()
+	@IsNumber()
 	longitude: number;
 	@IsNotEmpty()
 	@IsString()
