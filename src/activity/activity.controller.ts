@@ -1,14 +1,13 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ActivityService } from './activity.service';
-import { ActivityDto, LocationDto } from './dto';
-ActivityDto;
+import { ActivityDto } from './dto';
 
 @Controller('activity')
 export class ActivityController {
 	constructor(private activityService: ActivityService) {}
 
 	@Post('create')
-	create(@Body() dto: ActivityDto & LocationDto) {
+	create(@Body() dto: ActivityDto) {
 		return this.activityService.create(dto);
 	}
 

@@ -21,7 +21,7 @@ export class UserService {
 		return user;
 	}
 	async signin(dto: SinginDto) {
-		const user = await this.prisma.user.findFirst({
+		const user = await this.prisma.user.findUnique({
 			where: {
 				uid: dto.uid,
 			},
