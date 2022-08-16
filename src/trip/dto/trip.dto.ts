@@ -24,8 +24,8 @@ export class TripDto {
 	location: LocationDto;
 	accomodation?: {
 		location: LocationDto;
-		date: Date;
-		state: string;
+		startDate: Date;
+		endDate: Date;
 	}[];
 	travelEvents?: {
 		type: string;
@@ -33,7 +33,7 @@ export class TripDto {
 		destinationId: LocationDto;
 		departure: Date;
 		arrival: Date;
-		tripId: number;
+		tripId?: number;
 	}[];
 }
 
