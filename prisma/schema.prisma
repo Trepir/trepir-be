@@ -34,7 +34,7 @@ model Trip {
   endDate DateTime
   name String
   locationId String 
-  location Location @relation(fields:[locationId], references: [id], onDelete: Cascade)
+  location Location @relation(fields:[locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   favouriteActivities FavoriteActivity[]
