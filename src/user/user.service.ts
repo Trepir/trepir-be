@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UserDto } from './dto';
+import { SinginDto, UserDto } from './dto';
 @Injectable()
 export class UserService {
 	constructor(private prisma: PrismaService) {}
@@ -20,10 +20,15 @@ export class UserService {
 		delete user.id;
 		return user;
 	}
-	async signin(userDto: UserDto) {
+	async signin(dto: SinginDto) {
 		const user = await this.prisma.user.findFirst({
 			where: {
-				uid: userDto.uid,
+				uid: dto.uid,
+			},
+			include: {
+				favoriteActivities: true,
+				trips: true,
+				activities: true,
 			},
 		});
 		if (!user) throw new ForbiddenException('Credentials incorrect');
