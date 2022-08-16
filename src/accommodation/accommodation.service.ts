@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AccommodationState } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AccommodationDto, AccommodationEvent } from './dto/accommodation.dto';
+import { AccommodationDto } from './dto/accommodation.dto';
 
 @Injectable()
 export class AccommodationService {

@@ -1,17 +1,32 @@
 import { Controller, Post, Body, Put } from '@nestjs/common';
 import { TripService } from './trip.service';
 import { TripDto, updateTripDto } from './dto';
-
+import { AccommodationService } from 'src/accommodation/accommodation.service';
+import { AccommodationDto } from 'src/accommodation/dto';
+import { TravelEventDto } from 'src/travelEvent/dto';
+import { TravelEventService } from 'src/travelEvent/travelEvent.service';
 @Controller('trip')
 export class TripController {
-	// constructor(private tripService: TripService) {}
+	constructor(
+		private tripService: TripService,
+		private accommodationService: AccommodationService,
+		private travelEventService: TravelEventService
+	) {}
 	// @Post('create')
 	// create(@Body() tripDto: TripDto) {
-	// 	//dto:data transfer object
-	// 	return this.tripService.create(tripDto);
+	//  //dto:data transfer object
+	//  return this.tripService.create(tripDto);
 	// }
 	// @Put('update')
 	// update(@Body() tripDto: updateTripDto) {
-	// 	return this.tripService.update(tripDto);
+	//  return this.tripService.update(tripDto);
 	// }
+	@Post('addAccommodation')
+	addAccommodation(@Body() accommodationDto: AccommodationDto) {
+		return this.accommodationService.addAccommodation(accommodationDto);
+	}
+	@Post('addTravelEvent')
+	addTravelEvent(@Body() travelEventDto: TravelEventDto) {
+		return this.travelEventService.addTravelEvent(travelEventDto);
+	}
 }
