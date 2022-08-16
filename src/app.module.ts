@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { TripModule } from './trip/trip.module';
 import { ActivityModule } from './activity/activity.module';
 import { ConfigModule } from '@nestjs/config';
-import { AccomodationModule } from './accomodation/accomodation.module';
+import { AccommodationModule } from './accommodation/accommodation.module';
 
 @Module({
 	imports: [
@@ -16,7 +16,7 @@ import { AccomodationModule } from './accomodation/accomodation.module';
 		AuthModule,
 		TripModule,
 		ConfigModule.forRoot({ isGlobal: true }),
-		AccomodationModule,
+		AccommodationModule,
 	],
 })
 export class AppModule {}

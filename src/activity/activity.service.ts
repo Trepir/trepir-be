@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ActivityDto, LocationDto } from './dto';
+import { ActivityDto } from './dto';
 
 @Injectable()
 export class ActivityService {
 	constructor(private prisma: PrismaService) {}
 
-	async create(dto: ActivityDto & LocationDto) {
+	async create(dto: ActivityDto) {
 		const currentUser = await this.prisma.user.findUnique({
 			where: {
 				uid: dto.uid,
@@ -23,21 +23,14 @@ export class ActivityService {
 					rating: dto.rating,
 					location: {
 						connectOrCreate: {
-							where: { googleId: dto.googleId },
+							where: { googleId: dto.location.googleId },
 
 							create: {
-								latitude: dto.latitude,
-								longitude: dto.longitude,
-								googleId: dto.googleId,
-								country: dto.country,
-								state: dto.state,
-								city: dto.city,
-								locationName: dto.locationName,
+								...dto.location,
 							},
 						},
 					},
 					tags: dto.tags,
-
 					creator: {
 						connect: {
 							id: currentUser.id,
