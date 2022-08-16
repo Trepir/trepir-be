@@ -19,24 +19,53 @@ export class TripDto {
 	@IsString()
 	@IsNotEmpty()
 	name: string;
-	@IsNumber()
-	@IsNotEmpty()
-	longitude: number;
-	@IsNumber()
-	@IsNotEmpty()
-	latitude: number;
 	@IsString()
 	@IsNotEmpty()
-	place_Id: string;
+	location: LocationDto;
+	accomodation?: {
+		location: LocationDto;
+		date: Date;
+		state: string;
+	}[];
+	travelEvents?: {
+		type: string;
+		originId: LocationDto;
+		destinationId: LocationDto;
+		departure: Date;
+		arrival: Date;
+		tripId: number;
+	}[];
+}
+
+export class LocationDto {
+	@IsNotEmpty()
+	@IsNumber()
+	latitude: number;
+	@IsNotEmpty()
+	@IsNumber()
+	longitude: number;
+	@IsNotEmpty()
+	@IsString()
+	country: string;
+	@IsNotEmpty()
+	@IsString()
+	state: string;
+	@IsNotEmpty()
+	@IsString()
+	locationName: string;
+	@IsNotEmpty()
+	@IsString()
+	city: string;
+
+	@IsString()
+	googleId: string | null;
+}
+
+export class favouriteActivityDto {
+	activityId: string[];
 }
 
 export class updateTripDto {
-	@IsNotEmpty()
-	@IsDate()
-	startDate: Date;
-	@IsNotEmpty()
-	@IsDate()
-	endDate: Date;
 	@IsNotEmpty()
 	@IsString()
 	id: string;
@@ -44,11 +73,12 @@ export class updateTripDto {
 	@IsNotEmpty()
 	uid: string;
 	@IsArray()
-	days?: {
+	tripDays?: {
 		dayIndex: number;
 		dayActivities?: {
 			activityId: string;
 			eventType: string;
+			order: number;
 		}[];
 	}[];
 }
