@@ -1,4 +1,4 @@
-import { Activity, Location, Tag } from '@prisma/client';
+import { Tag } from '@prisma/client';
 import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ActivityDto {
@@ -27,14 +27,15 @@ export class ActivityDto {
 	tags?: Tag[];
 
 	//
+	location: LocationDto;
 }
 
 export class LocationDto {
-	@IsNotEmpty()
 	@IsNumber()
+	@IsNotEmpty()
 	latitude: number;
-	@IsNotEmpty()
 	@IsNumber()
+	@IsNotEmpty()
 	longitude: number;
 	@IsNotEmpty()
 	@IsString()
