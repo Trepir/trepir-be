@@ -1,6 +1,6 @@
 import { IsString, IsNotEmpty, IsDate } from 'class-validator';
 import { TravelType } from '@prisma/client';
-import { LocationDto } from 'src/trip/dto';
+import { LocationDto } from 'src/activity/dto';
 
 export class TravelEventDto {
 	@IsNotEmpty()
