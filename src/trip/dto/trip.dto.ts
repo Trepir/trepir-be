@@ -1,3 +1,4 @@
+import { TravelType } from '@prisma/client';
 import {
 	IsNotEmpty,
 	IsString,
@@ -5,6 +6,8 @@ import {
 	IsArray,
 	IsNumber,
 } from 'class-validator';
+
+import { LocationDto } from 'src/activity/dto';
 
 export class TripDto {
 	@IsString()
@@ -22,43 +25,20 @@ export class TripDto {
 	@IsString()
 	@IsNotEmpty()
 	location: LocationDto;
-	accomodation?: {
+	accommodation?: {
 		location: LocationDto;
 		startDate: Date;
 		endDate: Date;
+		tripId?: string;
 	}[];
 	travelEvents?: {
-		type: string;
-		originId: LocationDto;
-		destinationId: LocationDto;
+		travelType: TravelType;
+		origin: LocationDto;
+		destination: LocationDto;
 		departure: Date;
 		arrival: Date;
-		tripId?: number;
+		tripId?: string;
 	}[];
-}
-
-export class LocationDto {
-	@IsNotEmpty()
-	@IsNumber()
-	latitude: number;
-	@IsNotEmpty()
-	@IsNumber()
-	longitude: number;
-	@IsNotEmpty()
-	@IsString()
-	country: string;
-	@IsNotEmpty()
-	@IsString()
-	state: string;
-	@IsNotEmpty()
-	@IsString()
-	locationName: string;
-	@IsNotEmpty()
-	@IsString()
-	city: string;
-
-	@IsString()
-	googleId: string | null;
 }
 
 export class favouriteActivityDto {

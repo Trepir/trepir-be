@@ -12,11 +12,10 @@ export class TripController {
 		private accommodationService: AccommodationService,
 		private travelEventService: TravelEventService
 	) {}
-	// @Post('create')
-	// create(@Body() tripDto: TripDto) {
-	//  //dto:data transfer object
-	//  return this.tripService.create(tripDto);
-	// }
+	@Post('create')
+	create(@Body() tripDto: TripDto) {
+		return this.tripService.create(tripDto);
+	}
 	// @Put('update')
 	// update(@Body() tripDto: updateTripDto) {
 	//  return this.tripService.update(tripDto);
