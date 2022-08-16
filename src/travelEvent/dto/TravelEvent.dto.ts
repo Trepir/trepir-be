@@ -1,45 +1,20 @@
-import { IsString, IsNotEmpty, IsNumber, IsDate } from 'class-validator';
+import { IsString, IsNotEmpty, IsDate } from 'class-validator';
 import { TravelType } from '@prisma/client';
+import { LocationDto } from 'src/trip/dto';
+
 export class TravelEventDto {
 	@IsNotEmpty()
 	travelType: TravelType;
 	@IsNotEmpty()
-	originId: LocationDto;
+	origin: LocationDto;
 	@IsNotEmpty()
-	destinationId: LocationDto;
+	destination: LocationDto;
 	@IsNotEmpty()
 	@IsDate()
 	departure: Date;
-	@IsNotEmpty()
-	@IsDate()
-	arrival: Date;
-	@IsNumber()
-	@IsNotEmpty()
-	tripId: number;
-}
-
-export class LocationDto {
-	@IsNotEmpty()
-	@IsNumber()
-	latitude: number;
-	@IsNotEmpty()
-	@IsNumber()
-	longitude: number;
-	@IsNotEmpty()
 	@IsString()
-	country: string;
 	@IsNotEmpty()
-	@IsString()
-	state: string;
-	@IsNotEmpty()
-	@IsString()
-	locationName: string;
-	@IsNotEmpty()
-	@IsString()
-	city: string;
-
-	@IsString()
-	googleId: string | null;
+	tripId: string;
 }
 
 export class TravelTypeDto {
