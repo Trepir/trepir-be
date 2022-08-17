@@ -23,12 +23,3 @@ export class AccommodationDto {
 	@IsObject()
 	location: LocationDto;
 }
-
-export class AccommodationEvent {
-	tripId: string;
-	date: Date;
-	location: LocationDto;
-	state: AccommodationState;
-	tripDayActivityId: string;
-	order: number;
-}

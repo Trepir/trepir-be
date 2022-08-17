@@ -77,7 +77,7 @@ export class AccommodationService {
 						id: currentTripDay.id,
 					},
 				},
-				order: currentTripDay.tripDayActivities.length + 1,
+				order: currentTripDay.tripDayActivities.length,
 				accommodation: {
 					create: {
 						date: accommodationDate,
