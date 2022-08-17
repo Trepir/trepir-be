@@ -93,3 +93,9 @@ export class updateTripDto {
 		}[];
 	}[];
 }
+
+export class tripIdDto {
+	@IsNotEmpty()
+	@IsString()
+	tripId: string;
+}

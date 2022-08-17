@@ -27,16 +27,8 @@ export class UserService {
 			},
 			include: {
 				favoriteActivities: true,
-				trips: {
-					include: {
-						tripDay: {
-							include: {
-								tripDayActivities: true,
-							},
-						},
-					},
-				},
-				activities: true,
+				trips: true,
+				activities: false,
 			},
 		});
 		if (!user) throw new ForbiddenException('Credentials incorrect');
