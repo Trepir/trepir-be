@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString, IsDate } from 'class-validator';
+import { IsNotEmpty, IsString, IsDate, IsObject } from 'class-validator';
 import { LocationDto } from 'src/activity/dto';
 import { AccommodationState } from '@prisma/client';
 
@@ -6,6 +6,7 @@ export class AccommodationDto {
 	@IsString()
 	@IsNotEmpty()
 	uid: string;
+
 	@IsString()
 	@IsNotEmpty()
 	tripId: string;
@@ -13,9 +14,13 @@ export class AccommodationDto {
 	@IsNotEmpty()
 	@IsDate()
 	startDate: Date;
+
 	@IsNotEmpty()
 	@IsDate()
 	endDate: Date;
+
+	@IsNotEmpty()
+	@IsObject()
 	location: LocationDto;
 }
 
