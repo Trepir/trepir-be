@@ -26,15 +26,15 @@ export class AccommodationService {
 		});
 
 		//create accomodation for start date / checkin
-		this.createOneAccommodation(
+		await this.createOneAccommodation(
 			currentTrip.startDate,
 			accommodationDto.startDate,
 			'CheckIn',
 			accommodationDto
 		);
-		//create accomodation for start date / checkout
+		//create accomodation for end date / checkout
 		console.log('Checkout log');
-		this.createOneAccommodation(
+		await this.createOneAccommodation(
 			currentTrip.startDate,
 			accommodationDto.endDate,
 			'CheckOut',
