@@ -7,7 +7,7 @@ import {
 	IsNumber,
 	IsObject,
 	IsOptional,
-	ValidateNested,
+	IsDateString,
 } from 'class-validator';
 
 import { LocationDto } from 'src/activity/dto';
@@ -18,11 +18,11 @@ export class TripDto {
 	uid: string;
 
 	@IsNotEmpty()
-	@IsDate()
+	@IsDateString()
 	startDate: Date;
 
 	@IsNotEmpty()
-	@IsDate()
+	@IsDateString()
 	endDate: Date;
 
 	@IsString()

@@ -12,16 +12,22 @@ export class TripService {
 		private travelEventService: TravelEventService
 	) {}
 	tripLength = (endDate: Date, startDate: Date) => {
-		const diffInMs: number =
-			Number(new Date(endDate)) - Number(new Date(startDate));
+		const diffInMs: number = Number(endDate) - Number(startDate);
 		return diffInMs / (1000 * 60 * 60 * 24) + 1;
 	};
 
 	async create(tripDto: TripDto) {
 		//creating an empty array with the length of the duration of the trip
-		const dayArr: any[] = new Array(
-			this.tripLength(tripDto.endDate, tripDto.startDate)
-		);
+
+		tripDto.startDate = new Date(tripDto.startDate);
+		tripDto.endDate = new Date(tripDto.endDate);
+		const tripLength = this.tripLength(tripDto.endDate, tripDto.startDate);
+		const dayArr: any[] = new Array(tripLength)
+			.fill('', 0, tripLength)
+			.map((e, i) => {
+				return { dayIndex: i };
+			});
+
 		//connecting a user from the table  with the trip
 		const currentUser = await this.prisma.user.findUnique({
 			where: {
@@ -50,32 +56,39 @@ export class TripService {
 					},
 				},
 				tripDay: {
-					create: dayArr.map((_, i) => {
-						return {
-							dayIndex: i,
-						};
-					}),
+					createMany: {
+						data: dayArr,
+					},
 				},
 			},
 		});
+
 		// if there is accommodiation
-		tripDto.accommodation.length &&
-			tripDto.accommodation.forEach((ac) =>
-				this.accommodationService.addAccommodation({
+		tripDto.accommodation?.length &&
+			tripDto.accommodation.forEach((ac) => {
+				console.log('Call add Accomodation service', trip.id);
+				return this.accommodationService.addAccommodation({
 					...ac,
 					tripId: trip.id,
 					uid: tripDto.uid,
-				})
-			);
+				});
+			});
 		// if there is travel events
-		tripDto.travelEvents.length &&
+		tripDto.travelEvents?.length &&
 			tripDto.travelEvents.forEach((event) =>
 				this.travelEventService.addTravelEvent({
 					...event,
 					tripId: trip.id,
 				})
 			);
-		return trip;
+		return await this.prisma.trip.findUnique({
+			where: {
+				id: trip.id,
+			},
+			include: {
+				tripDay: true,
+			},
+		});
 	}
 }
 

@@ -8,13 +8,14 @@ export class AccommodationService {
 	constructor(private prisma: PrismaService) {}
 	//calculating number of days of the trip
 	calcDayIndex(date: Date, tripStartDate: Date) {
-		const days: number =
-			Number(new Date(date)) - Number(new Date(tripStartDate));
+		const days: number = Number(date) - Number(tripStartDate);
 		const index: number = days / (1000 * 60 * 60 * 24);
 		return index;
 	}
 
 	async addAccommodation(accommodationDto: AccommodationDto) {
+		accommodationDto.startDate = new Date(accommodationDto.startDate);
+		accommodationDto.endDate = new Date(accommodationDto.endDate);
 		//obtaining the trip where the accomodation corresponds to
 		const currentTrip = await this.prisma.trip.findUnique({
 			where: {
