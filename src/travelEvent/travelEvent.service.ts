@@ -10,6 +10,8 @@ export class TravelEventService {
 		private accommodationService: AccommodationService
 	) {}
 	async addTravelEvent(travelEventDto: TravelEventDto) {
+		travelEventDto.departure = new Date(travelEventDto.departure);
+
 		//finding our trip by mathching the trip id with the coresponding trip table entry
 		const currentTrip = await this.prisma.trip.findUnique({
 			where: {
