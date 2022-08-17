@@ -2,10 +2,8 @@ import { TravelType } from '@prisma/client';
 import {
 	IsNotEmpty,
 	IsString,
-	IsDate,
 	IsArray,
 	IsNumber,
-	IsObject,
 	IsOptional,
 	IsDateString,
 } from 'class-validator';
@@ -29,9 +27,29 @@ export class TripDto {
 	@IsNotEmpty()
 	name: string;
 
+	@IsString()
 	@IsNotEmpty()
-	@IsObject()
-	location: LocationDto;
+	googlePlaceId: string;
+
+	@IsNumber()
+	@IsNotEmpty()
+	latitude: number;
+
+	@IsNumber()
+	@IsNotEmpty()
+	longitude: number;
+
+	@IsString()
+	@IsOptional()
+	photoUrl?: string;
+
+	@IsString()
+	@IsNotEmpty()
+	formattedAddress: string;
+
+	@IsString()
+	@IsNotEmpty()
+	googleLocationName: string;
 
 	@IsOptional()
 	@IsArray()

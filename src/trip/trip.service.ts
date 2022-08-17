@@ -45,16 +45,13 @@ export class TripService {
 				startDate: tripDto.startDate,
 				endDate: tripDto.endDate,
 				name: tripDto.name,
-				location: {
-					connectOrCreate: {
-						where: {
-							googleId: tripDto.location.googleId,
-						},
-						create: {
-							...tripDto.location,
-						},
-					},
-				},
+				googlePlaceId: tripDto.googlePlaceId,
+				latitude: tripDto.latitude,
+				longitude: tripDto.longitude,
+				photoUrl: tripDto.photoUrl,
+				formattedAddress: tripDto.formattedAddress,
+				googleLocationName: tripDto.googleLocationName,
+
 				tripDay: {
 					createMany: {
 						data: dayArr,
