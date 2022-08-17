@@ -1,34 +1,14 @@
 import { Tag } from '@prisma/client';
-import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class ActivityDto {
-	@IsNotEmpty()
-	@IsString()
-	name: string;
-
-	@IsNotEmpty()
-	@IsNumber()
-	duration: number;
-
-	@IsNotEmpty()
-	@IsString()
-	description: string;
-
-	time?: Date;
-	rating?: number;
-
-	@IsNotEmpty()
-	@IsString()
-	uid: string;
-
-	// Tags
-
-	@IsArray()
-	tags?: Tag[];
-
-	//
-	location: LocationDto;
-}
+import {
+	IsArray,
+	IsDate,
+	IsNotEmpty,
+	IsNumber,
+	IsObject,
+	IsOptional,
+	IsString,
+} from 'class-validator';
 
 export class LocationDto {
 	@IsNumber()
@@ -50,6 +30,44 @@ export class LocationDto {
 	@IsString()
 	city: string;
 
+	@IsOptional()
 	@IsString()
-	googleId: string | null;
+	googleId?: string;
+}
+
+export class ActivityDto {
+	@IsNotEmpty()
+	@IsString()
+	name: string;
+
+	@IsNotEmpty()
+	@IsNumber()
+	duration: number;
+
+	@IsNotEmpty()
+	@IsString()
+	description: string;
+
+	@IsOptional()
+	@IsDate()
+	time?: Date;
+
+	@IsOptional()
+	@IsNumber()
+	rating?: number;
+
+	@IsNotEmpty()
+	@IsString()
+	uid: string;
+
+	// Tags
+
+	@IsOptional()
+	@IsArray()
+	tags?: Tag[];
+
+	//
+	@IsNotEmpty()
+	@IsObject()
+	location: LocationDto;
 }

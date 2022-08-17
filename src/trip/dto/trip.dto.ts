@@ -5,6 +5,9 @@ import {
 	IsDate,
 	IsArray,
 	IsNumber,
+	IsObject,
+	IsOptional,
+	ValidateNested,
 } from 'class-validator';
 
 import { LocationDto } from 'src/activity/dto';
@@ -13,24 +16,34 @@ export class TripDto {
 	@IsString()
 	@IsNotEmpty()
 	uid: string;
+
 	@IsNotEmpty()
 	@IsDate()
 	startDate: Date;
+
 	@IsNotEmpty()
 	@IsDate()
 	endDate: Date;
+
 	@IsString()
 	@IsNotEmpty()
 	name: string;
-	@IsString()
+
 	@IsNotEmpty()
+	@IsObject()
 	location: LocationDto;
+
+	@IsOptional()
+	@IsArray()
 	accommodation?: {
 		location: LocationDto;
 		startDate: Date;
 		endDate: Date;
 		tripId?: string;
 	}[];
+
+	@IsOptional()
+	@IsArray()
 	travelEvents?: {
 		travelType: TravelType;
 		origin: LocationDto;

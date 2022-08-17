@@ -12,6 +12,8 @@ export class ActivityService {
 				uid: dto.uid,
 			},
 		});
+		console.log({ ...dto.location });
+		console.log(dto);
 
 		try {
 			const activity = await this.prisma.activity.create({
