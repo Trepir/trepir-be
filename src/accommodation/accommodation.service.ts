@@ -10,6 +10,7 @@ export class AccommodationService {
 	calcDayIndex(date: Date, tripStartDate: Date) {
 		const days: number = Number(date) - Number(tripStartDate);
 		const index: number = days / (1000 * 60 * 60 * 24);
+		console.log('Index: ', index);
 		return index;
 	}
 
@@ -21,7 +22,9 @@ export class AccommodationService {
 			where: {
 				id: accommodationDto.tripId,
 			},
+			include: { tripDay: true },
 		});
+
 		//create accomodation for start date / checkin
 		this.createOneAccommodation(
 			currentTrip.startDate,
@@ -30,6 +33,7 @@ export class AccommodationService {
 			accommodationDto
 		);
 		//create accomodation for start date / checkout
+		console.log('Checkout log');
 		this.createOneAccommodation(
 			currentTrip.startDate,
 			accommodationDto.endDate,
@@ -69,6 +73,8 @@ export class AccommodationService {
 			accommodationDate,
 			dto.tripId
 		);
+		console.log('currentTripDay () =', currentTripDay);
+
 		const newAccommodation = await this.prisma.tripDayActivity.create({
 			data: {
 				tripDay: {

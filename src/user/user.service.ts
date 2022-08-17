@@ -27,7 +27,15 @@ export class UserService {
 			},
 			include: {
 				favoriteActivities: true,
-				trips: true,
+				trips: {
+					include: {
+						tripDay: {
+							include: {
+								tripDayActivities: true,
+							},
+						},
+					},
+				},
 				activities: true,
 			},
 		});

@@ -66,7 +66,7 @@ export class TripService {
 		// if there is accommodiation
 		tripDto.accommodation?.length &&
 			tripDto.accommodation.forEach((ac) => {
-				console.log('Call add Accomodation service', trip.id);
+				console.log('Call add Accomodation service');
 				return this.accommodationService.addAccommodation({
 					...ac,
 					tripId: trip.id,

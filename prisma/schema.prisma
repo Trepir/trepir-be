@@ -36,6 +36,7 @@ model Trip {
   name String
   locationId String 
   location Location @relation(fields:[locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  imgageUrl String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   favouriteActivities FavoriteActivity[]
@@ -151,6 +152,7 @@ model Activity {
   createdAt DateTime @default(now())
   name String
   duration Float
+  imageUrl String?
   description String
   time DateTime?
   rating Int?
