@@ -16,17 +16,19 @@ export class TripService {
 			Number(new Date(endDate)) - Number(new Date(startDate));
 		return diffInMs / (1000 * 60 * 60 * 24) + 1;
 	};
+
 	async create(tripDto: TripDto) {
+		//creating an empty array with the length of the duration of the trip
 		const dayArr: any[] = new Array(
 			this.tripLength(tripDto.endDate, tripDto.startDate)
 		);
-
+		//connecting a user from the table  with the trip
 		const currentUser = await this.prisma.user.findUnique({
 			where: {
 				uid: tripDto.uid,
 			},
 		});
-
+		//crating the trip
 		const trip = await this.prisma.trip.create({
 			data: {
 				user: {
@@ -56,6 +58,7 @@ export class TripService {
 				},
 			},
 		});
+		// if there is accommodiation
 		tripDto.accommodation.length &&
 			tripDto.accommodation.forEach((ac) =>
 				this.accommodationService.addAccommodation({
@@ -64,6 +67,7 @@ export class TripService {
 					uid: tripDto.uid,
 				})
 			);
+		// if there is travel events
 		tripDto.travelEvents.length &&
 			tripDto.travelEvents.forEach((event) =>
 				this.travelEventService.addTravelEvent({
