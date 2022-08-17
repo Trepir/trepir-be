@@ -34,7 +34,7 @@ export class TravelEventService {
 					},
 				},
 				//the activities array length of the corrsponding day entry
-				order: currentTripDay.tripDayActivities.length + 1,
+				order: currentTripDay.tripDayActivities.length,
 				travelEvent: {
 					//creating the travel event
 					create: {
