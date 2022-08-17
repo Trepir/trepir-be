@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TravelEventService } from 'src/travelEvent/travelEvent.service';
-import { TripDto, updateTripDto } from './dto';
+import { TripDto, updateTripDto, tripIdDto } from './dto';
 
 @Injectable()
 export class TripService {
@@ -89,6 +89,23 @@ export class TripService {
 				tripDay: true,
 			},
 		});
+	}
+
+	async tripById(id: string) {
+		const trip = await this.prisma.trip.findUnique({
+			where: {
+				id: id,
+			},
+			include: {
+				tripDay: {
+					include: {
+						tripDayActivities: true,
+					},
+				},
+			},
+		});
+		if (!trip) throw new ForbiddenException('incorrect Id');
+		return trip;
 	}
 }
 
