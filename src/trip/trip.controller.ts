@@ -1,6 +1,6 @@
-import { Controller, Post, Body, Put } from '@nestjs/common';
+import { Controller, Post, Body, Put, Get, Param } from '@nestjs/common';
 import { TripService } from './trip.service';
-import { TripDto, updateTripDto } from './dto';
+import { TripDto, tripIdDto, updateTripDto } from './dto';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { AccommodationDto } from 'src/accommodation/dto';
 import { TravelEventDto } from 'src/travelEvent/dto';
@@ -27,5 +27,9 @@ export class TripController {
 	@Post('addTravelEvent')
 	addTravelEvent(@Body() travelEventDto: TravelEventDto) {
 		return this.travelEventService.addTravelEvent(travelEventDto);
+	}
+	@Get('tripById/:id')
+	tripById(@Param('id') id) {
+		return this.tripService.tripById(id);
 	}
 }
