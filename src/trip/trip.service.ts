@@ -2,7 +2,7 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TravelEventService } from 'src/travelEvent/travelEvent.service';
-import { TripDto, updateTripDto, tripIdDto } from './dto';
+import { TripDto, updateTripDto } from './dto';
 
 @Injectable()
 export class TripService {
