@@ -1,6 +1,10 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ActivityService } from './activity.service';
-import { ActivityDto } from './dto';
+import {
+	ActivityDto,
+	FavoriteActivityDto,
+	ActivityByCoordinatesDto,
+} from './dto';
 
 @Controller('activity')
 export class ActivityController {
@@ -14,5 +18,14 @@ export class ActivityController {
 	@Get('all')
 	all() {
 		return this.activityService.all();
+	}
+
+	@Post('favorite')
+	favorite(@Body() dto: FavoriteActivityDto) {
+		return this.activityService.favorite(dto);
+	}
+	@Post('coordinates')
+	coordinates(@Body() dto: ActivityByCoordinatesDto) {
+		return this.activityService.coordinates(dto);
 	}
 }
