@@ -60,7 +60,7 @@ tripDayActivities TripDayActivity[]
 
 model TripDayActivity {
 
-id String @id @default(cuid()) 
+id String @id @default(cuid()) @unique
 tripDayId String
 tripDay TripDay @relation(fields: [tripDayId], references: [id], onDelete: Cascade)
 order Int
