@@ -16,4 +16,8 @@ export class AuthController {
 	signin(@Body() dto: SinginDto) {
 		return this.authService.signin(dto);
 	}
+	@Get('/dashboard')
+	user(@Body() dto: SinginDto) {
+		return this.authService.signin(dto);
+	}
 }
