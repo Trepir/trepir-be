@@ -5,12 +5,16 @@ import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { AccommodationDto } from 'src/accommodation/dto';
 import { TravelEventDto } from 'src/travelEvent/dto';
 import { TravelEventService } from 'src/travelEvent/travelEvent.service';
+import { AddActivityDto } from 'src/edit-trip/dto';
+import { EditTripService } from 'src/edit-trip/edit-trip.service';
+
 @Controller('trip')
 export class TripController {
 	constructor(
 		private tripService: TripService,
 		private accommodationService: AccommodationService,
-		private travelEventService: TravelEventService
+		private travelEventService: TravelEventService,
+		private editTripService: EditTripService
 	) {}
 	@Post('create')
 	create(@Body() tripDto: TripDto) {
@@ -27,6 +31,10 @@ export class TripController {
 	@Post('addTravelEvent')
 	addTravelEvent(@Body() travelEventDto: TravelEventDto) {
 		return this.travelEventService.addTravelEvent(travelEventDto);
+	}
+	@Post('addActivity')
+	addActivity(@Body() addActivityDto: AddActivityDto) {
+		return this.editTripService.addActivity(addActivityDto);
 	}
 	@Get('tripById/:id')
 	tripById(@Param('id') id) {
