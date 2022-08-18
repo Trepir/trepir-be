@@ -8,6 +8,8 @@ import { ActivityModule } from './activity/activity.module';
 import { ConfigModule } from '@nestjs/config';
 import { TravelEventModule } from './travelEvent/travelEvent.module';
 import { AccommodationModule } from './accommodation/accommodation.module';
+import { EditTripService } from './edit-trip/edit-trip.service';
+import { EditTripModule } from './edit-trip/edit-trip.module';
 
 @Module({
 	imports: [
@@ -17,6 +19,8 @@ import { AccommodationModule } from './accommodation/accommodation.module';
 		AuthModule,
 		TripModule,
 		ConfigModule.forRoot({ isGlobal: true }),
+		EditTripModule,
 	],
+	providers: [EditTripService],
 })
 export class AppModule {}
