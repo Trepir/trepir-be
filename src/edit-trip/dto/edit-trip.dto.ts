@@ -13,3 +13,8 @@ export class AddActivityDto {
 	@IsNumber()
 	time?: Date;
 }
+
+export class DeleteDto {
+	@IsString()
+	id: string;
+}
