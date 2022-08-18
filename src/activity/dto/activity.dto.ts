@@ -60,6 +60,10 @@ export class ActivityDto {
 	@IsString()
 	uid: string;
 
+	@IsNotEmpty()
+	@IsString()
+	imageUrl: string;
+
 	// Tags
 
 	@IsOptional()
@@ -70,4 +74,31 @@ export class ActivityDto {
 	@IsNotEmpty()
 	@IsObject()
 	location: LocationDto;
+}
+
+export class FavoriteActivityDto {
+	@IsNotEmpty()
+	@IsString()
+	activityId: string;
+	@IsNotEmpty()
+	@IsString()
+	uid: string;
+	@IsOptional()
+	@IsString()
+	tripId?: string;
+}
+
+export class ActivityByCoordinatesDto {
+	@IsNumber()
+	@IsNotEmpty()
+	latitudeLow: number;
+	@IsNumber()
+	@IsNotEmpty()
+	latitudeHigh: number;
+	@IsNumber()
+	@IsNotEmpty()
+	longitudeLow: number;
+	@IsNumber()
+	@IsNotEmpty()
+	longitudeHigh: number;
 }
