@@ -1,0 +1,213 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url      = env("DATABASE_URL_PRODUCTION")
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  firstName String
+  lastName String
+  displayName String
+  email String @unique
+  uid String @unique
+  photoUrl String
+  emailVerified Boolean
+  trips Trip[]
+  favoriteActivities FavoriteActivity[]
+  activities Activity[]
+  @@map("users")
+
+
+}
+
+model Trip {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  userId String 
+  startDate DateTime
+  endDate DateTime
+  name String
+  googlePlaceId String
+  latitude Float
+  longitude Float
+  formattedAddress String
+  googleLocationName String
+  photoUrl String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  favouriteActivities FavoriteActivity[]
+  tripDay TripDay[]
+
+  @@map("trips")
+}
+
+model TripDay {
+
+id String @id @default(cuid())
+dayIndex Int
+tripId String
+trip Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+tripDayActivities TripDayActivity[]
+
+}
+
+model TripDayActivity {
+
+id String @id @default(cuid()) 
+tripDayId String
+tripDay TripDay @relation(fields: [tripDayId], references: [id], onDelete: Cascade)
+order Int
+dayActivityId String? @unique
+dayActivity DayActivity? @relation(fields: [dayActivityId], references: [id], onDelete: Cascade)
+accommodationId String? @unique
+accommodation Accommodation? @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+travelEventId String? @unique
+travelEvent TravelEvent? @relation(fields: [travelEventId], references: [id], onDelete: Cascade)
+
+
+
+}
+
+
+
+model DayActivity {
+  id String @id @default(cuid()) @unique
+  createdAt DateTime @default(now())
+  activityId String
+  activity Activity @relation(fields:[activityId], references: [id], onDelete: Cascade)
+  time DateTime?
+  tripDayctivityId String?
+  tripDayActivity TripDayActivity? @relation()
+ 
+	
+}
+
+model FavoriteActivity {
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  activityId String
+  userId String
+  tripId String?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  trip Trip? @relation(fields:[tripId], references: [id], onDelete: Cascade)
+  @@map("favorites")
+
+}
+
+model Accommodation {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  date DateTime
+  state AccommodationState
+  eventType EventType @default(Accommodation)
+  locationId String 
+  location Location @relation(fields:[locationId], references: [id], onDelete: Cascade)
+  tripDayActivityId String?
+  tripDayActivity TripDayActivity? @relation()
+  @@map("accommodations")
+}
+
+model Location {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  latitude Float
+  longitude Float
+  country String
+  state String
+  locationName String
+  city String
+  googleId String? @unique
+  travelOrigin TravelEvent[] @relation("travelOrigin")
+  travelDestination TravelEvent[] @relation("travelDestination")
+
+
+  activity Activity[]
+  accommodation Accommodation[]
+
+  @@map("locations")
+}
+
+model TravelEvent {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  originLocationId String 
+  originLocation Location @relation("travelOrigin",fields:[originLocationId], references: [id], onDelete: Cascade)
+  destinationLocationId String 
+  destinationLocation Location @relation("travelDestination",fields:[destinationLocationId], references: [id], onDelete: Cascade)
+  type TravelType
+  departure DateTime
+  eventType EventType @default(TravelEvent)
+  tripDayActivityId String?
+  tripDayActivity TripDayActivity? @relation()
+  @@map("travel")
+}
+
+model Activity {
+  id String @id @default(cuid())
+  createdAt DateTime @default(now())
+  name String
+  duration Float
+  imageUrl String?
+  description String
+  time DateTime?
+  rating Int?
+  locationId String
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  tags Tag[]
+  creatorId String
+  creator User @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  favoriteActivities FavoriteActivity[]
+  dayActivities DayActivity[]
+  eventType EventType @default(Activity)
+
+  @@map("activities")
+}
+
+
+
+enum Tag {
+  Relax
+  Landmark
+  Entertainment
+  Drinks
+  Restaurant
+  Adventure  
+  Museum
+  Outdoors
+  Tour
+  Beach
+  Culture
+  Nightlife
+  Nature
+  Festivity
+  Sport
+  @@map("tags")
+}
+
+enum TravelType {
+  Flight
+  Bus
+  Boat
+  Car
+  Train
+}
+
+
+enum EventType {
+  TravelEvent
+  Accommodation
+  Activity
+}
+
+enum AccommodationState {
+  CheckIn
+  CheckOut
+}
