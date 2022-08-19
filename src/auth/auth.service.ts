@@ -6,15 +6,7 @@ export class AuthService {
 	constructor(private prisma: PrismaService) {}
 	async signup(userDto: UserDto) {
 		const user = await this.prisma.user.create({
-			data: {
-				email: userDto.email,
-				uid: userDto.uid,
-				firstName: userDto.firstName,
-				lastName: userDto.lastName,
-				displayName: userDto.displayName,
-				photoUrl: userDto.photoUrl,
-				emailVerified: userDto.emailVerified,
-			},
+			data: userDto,
 		});
 		delete user.uid;
 		delete user.id;
