@@ -122,6 +122,15 @@ export class TripService {
 						},
 					},
 				},
+				favouriteActivities: {
+					include: {
+						activity: {
+							include: {
+								location: true,
+							},
+						},
+					},
+				},
 			},
 		});
 		if (!trip) throw new ForbiddenException('incorrect Id');
