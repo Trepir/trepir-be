@@ -11,7 +11,6 @@ export class PrismaService extends PrismaClient {
 			datasources: {
 				db: {
 					url: config.get('DATABASE_URL_PRODUCTION'),
-					// url: config.get('DATABASE_URL'),
 				},
 			},
 		});
