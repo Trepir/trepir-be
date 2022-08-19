@@ -49,34 +49,59 @@ export class EditTripService {
 
 	async deleteActivity(dto: DeleteDto) {
 		try {
-			console.log('dto', dto.id);
+			console.log('deleteActivity()');
 			const eventToDelete = await this.prisma.tripDayActivity.findFirst({
 				where: {
 					id: dto.id,
 				},
 			});
 
-			// await this.prisma.tripDayActivity.updateMany({
-			// 	where: {
-			// 		tripDayId: eventToDelete.tripDayId,
-			// 		order: { gt: eventToDelete.order },
-			// 	},
-			// 	data: {
-			// 		order: order - 1,
-			// 	},
-			// });
+			const updateMany = await this.prisma.tripDayActivity.updateMany({
+				where: {
+					tripDayId: eventToDelete.tripDayId,
+					order: { gt: eventToDelete.order },
+				},
+				data: {
+					order: {
+						decrement: 1,
+					},
+				},
+			});
 
-			console.log(eventToDelete);
+			console.log('UpdateMany()  ', updateMany);
+
 			const deleteEvent = await this.prisma.tripDayActivity.delete({
 				where: {
 					id: dto.id,
 				},
 			});
 
-			console.log('deleted');
+			return deleteEvent;
 		} catch (e) {
 			console.log(e);
 		}
+	}
+
+	async findActivitiesToUpdate(
+		tripDayId: string,
+		currentOrder: number,
+		newOrderPosition?: number
+	) {
+		const search = {};
+		if (newOrderPosition) {
+			newOrderPosition > currentOrder
+				? (search['lt'] = currentOrder)
+				: (search['gt'] = currentOrder);
+		} else {
+			search['gt'] = currentOrder;
+		}
+
+		return await this.prisma.tripDayActivity.findMany({
+			where: {
+				tripDayId: tripDayId,
+				order: search,
+			},
+		});
 	}
 
 	// return await this.prisma.tripDay.findUnique({
