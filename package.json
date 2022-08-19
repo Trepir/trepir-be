@@ -10,7 +10,7 @@
 		"build": "nest build",
 		"lint": "eslint . --fix --max-warnings=0",
 		"format": "prettier . --write",
-		"start": "npx prisma migrate deploy && nest start",
+		"start": "nest start",
 		"start:dev": "nest start --watch",
 		"start:debug": "nest start --debug --watch",
 		"start:prod": "node dist/main",
