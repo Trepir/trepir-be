@@ -120,10 +120,12 @@ model Location {
   createdAt DateTime @default(now())
   latitude Float
   longitude Float
-  country String
-  state String
+  country String?
+  state String?
+  photoUrl String[]
+  formattedAddress String
   locationName String
-  city String
+  city String?
   googleId String? @unique
   travelOrigin TravelEvent[] @relation("travelOrigin")
   travelDestination TravelEvent[] @relation("travelDestination")
