@@ -96,7 +96,28 @@ export class TripService {
 			include: {
 				tripDay: {
 					include: {
-						tripDayActivities: true,
+						tripDayActivities: {
+							include: {
+								accommodation: {
+									include: { location: true },
+								},
+								travelEvent: {
+									include: {
+										originLocation: true,
+										destinationLocation: true,
+									},
+								},
+								dayActivity: {
+									include: {
+										activity: {
+											include: {
+												location: true,
+											},
+										},
+									},
+								},
+							},
+						},
 					},
 				},
 			},
