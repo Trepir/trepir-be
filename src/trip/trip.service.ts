@@ -12,8 +12,9 @@ export class TripService {
 		private travelEventService: TravelEventService
 	) {}
 	tripLength = (endDate: Date, startDate: Date) => {
+		const millisecondsInDays = 1000 * 60 * 60 * 24;
 		const diffInMs: number = Number(endDate) - Number(startDate);
-		return diffInMs / (1000 * 60 * 60 * 24) + 1;
+		return diffInMs / millisecondsInDays + 1;
 	};
 
 	async create(tripDto: TripDto) {
@@ -22,11 +23,12 @@ export class TripService {
 		tripDto.startDate = new Date(tripDto.startDate);
 		tripDto.endDate = new Date(tripDto.endDate);
 		const tripLength = this.tripLength(tripDto.endDate, tripDto.startDate);
-		const dayArr: any[] = new Array(tripLength)
-			.fill('', 0, tripLength)
-			.map((e, i) => {
-				return { dayIndex: i };
-			});
+		const dayArr: any[] = Array.from({ length: tripLength });
+		// new Array(tripLength)
+		// 	.fill('', 0, tripLength)
+		// 	.map((e, i) => {
+		// 		return { dayIndex: i };
+		// 	});
 
 		//connecting a user from the table  with the trip
 		const currentUser = await this.prisma.user.findUnique({
