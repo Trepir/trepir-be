@@ -153,6 +153,9 @@ CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 CREATE UNIQUE INDEX "users_uid_key" ON "users"("uid");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "TripDayActivity_id_key" ON "TripDayActivity"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "TripDayActivity_dayActivityId_key" ON "TripDayActivity"("dayActivityId");
 
 -- CreateIndex

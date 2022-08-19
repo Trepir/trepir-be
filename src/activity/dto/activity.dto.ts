@@ -17,18 +17,23 @@ export class LocationDto {
 	@IsNumber()
 	@IsNotEmpty()
 	longitude: number;
-	@IsNotEmpty()
+	@IsOptional()
 	@IsString()
-	country: string;
-	@IsNotEmpty()
+	country?: string;
+	@IsOptional()
 	@IsString()
-	state: string;
+	state?: string;
 	@IsNotEmpty()
 	@IsString()
 	locationName: string;
 	@IsNotEmpty()
 	@IsString()
-	city: string;
+	formattedAddress: string;
+	@IsOptional()
+	@IsString()
+	city?: string;
+	@IsArray()
+	photoUrl: string[];
 
 	@IsOptional()
 	@IsString()

@@ -23,12 +23,11 @@ export class TripService {
 		tripDto.startDate = new Date(tripDto.startDate);
 		tripDto.endDate = new Date(tripDto.endDate);
 		const tripLength = this.tripLength(tripDto.endDate, tripDto.startDate);
-		const dayArr: any[] = Array.from({ length: tripLength });
-		// new Array(tripLength)
-		// 	.fill('', 0, tripLength)
-		// 	.map((e, i) => {
-		// 		return { dayIndex: i };
-		// 	});
+		const dayArr: any[] = new Array(tripLength)
+			.fill('', 0, tripLength)
+			.map((e, i) => {
+				return { dayIndex: i };
+			});
 
 		//connecting a user from the table  with the trip
 		const currentUser = await this.prisma.user.findUnique({
@@ -98,7 +97,37 @@ export class TripService {
 			include: {
 				tripDay: {
 					include: {
-						tripDayActivities: true,
+						tripDayActivities: {
+							include: {
+								accommodation: {
+									include: { location: true },
+								},
+								travelEvent: {
+									include: {
+										originLocation: true,
+										destinationLocation: true,
+									},
+								},
+								dayActivity: {
+									include: {
+										activity: {
+											include: {
+												location: true,
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+				favouriteActivities: {
+					include: {
+						activity: {
+							include: {
+								location: true,
+							},
+						},
 					},
 				},
 			},
