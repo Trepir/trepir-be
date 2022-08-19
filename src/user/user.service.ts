@@ -26,7 +26,15 @@ export class UserService {
 				uid: dto.uid,
 			},
 			include: {
-				favoriteActivities: true,
+				favoriteActivities: {
+					include: {
+						activity: {
+							include: {
+								location: true,
+							},
+						},
+					},
+				},
 				trips: true,
 				activities: false,
 			},
