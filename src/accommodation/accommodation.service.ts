@@ -10,7 +10,7 @@ export class AccommodationService {
 	calcDayIndex(date: Date, tripStartDate: Date) {
 		const millisecondsInDays = 1000 * 60 * 60 * 24;
 		const days: number = Number(date) - Number(tripStartDate);
-		const index: number = days / millisecondsInDays;
+		const index: number = Math.floor(days / millisecondsInDays);
 		console.log('Index: ', index);
 		return index;
 	}

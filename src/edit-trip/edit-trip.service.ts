@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AddActivityDto, DeleteDto } from './dto';
+import { AddActivityDto, DeleteDto, ReorderDto } from './dto';
 
 @Injectable()
 export class EditTripService {
@@ -100,6 +100,20 @@ export class EditTripService {
 			where: {
 				tripDayId: tripDayId,
 				order: search,
+			},
+		});
+	}
+
+	async reorderDayActivity(dto: ReorderDto) {
+		const updateMany = await this.prisma.tripDayActivity.updateMany({
+			where: {
+				tripDayId: dto.tripDayId,
+				order: { gt: dto.order },
+			},
+			data: {
+				order: {
+					decrement: 1,
+				},
 			},
 		});
 	}

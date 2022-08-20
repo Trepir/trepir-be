@@ -14,7 +14,7 @@ export class TripService {
 	tripLength = (endDate: Date, startDate: Date) => {
 		const millisecondsInDays = 1000 * 60 * 60 * 24;
 		const diffInMs: number = Number(endDate) - Number(startDate);
-		return diffInMs / millisecondsInDays + 1;
+		return Math.floor(diffInMs / millisecondsInDays) + 1;
 	};
 
 	async create(tripDto: TripDto) {
