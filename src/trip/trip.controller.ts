@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Put, Get, Param } from '@nestjs/common';
 import { TripService } from './trip.service';
-import { TripDto, tripIdDto, updateTripDto } from './dto';
+import { TripDto, tripIdDto, UpdateTripDto } from './dto';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { AccommodationDto } from 'src/accommodation/dto';
 import { TravelEventDto } from 'src/travelEvent/dto';
@@ -20,10 +20,10 @@ export class TripController {
 	create(@Body() tripDto: TripDto) {
 		return this.tripService.create(tripDto);
 	}
-	// @Put('update')
-	// update(@Body() tripDto: updateTripDto) {
-	//  return this.tripService.update(tripDto);
-	// }
+	@Put('updateTrip')
+	updateTrip(@Body() tripDto: UpdateTripDto) {
+		return this.tripService.updateTrip(tripDto);
+	}
 	@Post('addAccommodation')
 	addAccommodation(@Body() accommodationDto: AccommodationDto) {
 		return this.accommodationService.addAccommodation(accommodationDto);
