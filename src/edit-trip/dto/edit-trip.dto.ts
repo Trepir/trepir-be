@@ -24,6 +24,13 @@ export class DeleteDto {
 }
 
 export class ReorderDto {
-	order: number;
+	@IsNotEmpty()
+	@IsNumber()
+	newOrder: number;
+	@IsString()
+	@IsNotEmpty()
 	tripDayId: string;
+	@IsString()
+	@IsNotEmpty()
+	tripDayActivityId: string;
 }

@@ -13,7 +13,7 @@ import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { AccommodationDto } from 'src/accommodation/dto';
 import { TravelEventDto } from 'src/travelEvent/dto';
 import { TravelEventService } from 'src/travelEvent/travelEvent.service';
-import { AddActivityDto, DeleteDto } from 'src/edit-trip/dto';
+import { AddActivityDto, DeleteDto, ReorderDto } from 'src/edit-trip/dto';
 import { EditTripService } from 'src/edit-trip/edit-trip.service';
 
 @Controller('trip')
@@ -52,5 +52,10 @@ export class TripController {
 	@Get('tripById/:id')
 	tripById(@Param('id') id) {
 		return this.tripService.tripById(id);
+	}
+
+	@Put('reorderDay')
+	reorderDayActiviy(@Body() dto: ReorderDto) {
+		return this.editTripService.reorderDayActivity(dto);
 	}
 }

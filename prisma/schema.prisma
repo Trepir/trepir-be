@@ -64,12 +64,12 @@ id String @id @default(cuid()) @unique
 tripDayId String
 tripDay TripDay @relation(fields: [tripDayId], references: [id], onDelete: Cascade)
 order Int
-dayActivityId String? @unique
-dayActivity DayActivity? @relation(fields: [dayActivityId], references: [id], onDelete: Cascade)
-accommodationId String? @unique
-accommodation Accommodation? @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
-travelEventId String? @unique
-travelEvent TravelEvent? @relation(fields: [travelEventId], references: [id], onDelete: Cascade)
+
+dayActivity DayActivity?
+
+accommodation Accommodation? 
+
+travelEvent TravelEvent?
 
 
 
@@ -83,8 +83,8 @@ model DayActivity {
   activityId String
   activity Activity @relation(fields:[activityId], references: [id], onDelete: Cascade)
   time DateTime?
-  tripDayctivityId String?
-  tripDayActivity TripDayActivity? @relation()
+  tripDayActivityId String? @unique
+  tripDayActivity TripDayActivity? @relation(fields: [tripDayActivityId], references: [id], onDelete: Cascade)
  
 	
 }
@@ -110,8 +110,8 @@ model Accommodation {
   eventType EventType @default(Accommodation)
   locationId String 
   location Location @relation(fields:[locationId], references: [id], onDelete: Cascade)
-  tripDayActivityId String?
-  tripDayActivity TripDayActivity? @relation()
+  tripDayActivityId String? @unique
+  tripDayActivity TripDayActivity? @relation(fields: [tripDayActivityId], references: [id], onDelete: Cascade)
   @@map("accommodations")
 }
 
@@ -147,8 +147,8 @@ model TravelEvent {
   type TravelType
   departure DateTime
   eventType EventType @default(TravelEvent)
-  tripDayActivityId String?
-  tripDayActivity TripDayActivity? @relation()
+  tripDayActivityId String? @unique
+  tripDayActivity TripDayActivity? @relation(fields: [tripDayActivityId], references: [id], onDelete: Cascade)
   @@map("travel")
 }
 
