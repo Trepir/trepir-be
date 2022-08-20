@@ -2,7 +2,7 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TravelEventService } from 'src/travelEvent/travelEvent.service';
-import { TripDto, updateTripDto } from './dto';
+import { TripDto, UpdateTripDto } from './dto';
 
 @Injectable()
 export class TripService {
@@ -134,6 +134,15 @@ export class TripService {
 		});
 		if (!trip) throw new ForbiddenException('incorrect Id');
 		return trip;
+	}
+	async updateTrip(dto: UpdateTripDto) {
+		dto.startDate = new Date(dto.startDate);
+		dto.endDate = new Date(dto.endDate);
+		const updatedTrip = await this.prisma.trip.update({
+			where: { id: dto.id },
+			data: dto,
+		});
+		return updatedTrip;
 	}
 }
 

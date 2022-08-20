@@ -75,22 +75,19 @@ export class favouriteActivityDto {
 	activityId: string[];
 }
 
-export class updateTripDto {
+export class UpdateTripDto {
 	@IsNotEmpty()
 	@IsString()
 	id: string;
+	@IsOptional()
 	@IsString()
-	@IsNotEmpty()
-	uid: string;
-	@IsArray()
-	tripDays?: {
-		dayIndex: number;
-		dayActivities?: {
-			activityId: string;
-			eventType: string;
-			order: number;
-		}[];
-	}[];
+	name?: string;
+	@IsOptional()
+	@IsDateString()
+	startDate?: Date;
+	@IsOptional()
+	@IsDateString()
+	endDate?: Date;
 }
 
 export class tripIdDto {
