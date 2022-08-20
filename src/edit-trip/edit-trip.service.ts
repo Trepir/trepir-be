@@ -14,7 +14,7 @@ export class EditTripService {
 				tripDayActivities: true,
 			},
 		});
-		return await this.prisma.tripDayActivity.create({
+		const newActivity = await this.prisma.tripDayActivity.create({
 			data: {
 				tripDay: {
 					connect: {
@@ -45,6 +45,14 @@ export class EditTripService {
 				},
 			},
 		});
+
+		return !dto.order
+			? newActivity
+			: this.reorderDayActivity({
+					tripDayActivityId: newActivity.id,
+					newOrder: dto.order,
+					tripDayId: dto.tripDayId,
+			  });
 	}
 
 	async deleteActivity(dto: DeleteDto) {
@@ -89,9 +97,11 @@ export class EditTripService {
 	) {
 		const search = {};
 		if (newOrderPosition) {
-			newOrderPosition > currentOrder
-				? (search['lt'] = currentOrder)
-				: (search['gt'] = currentOrder);
+			const condition = this.greaterOrLowerIndex(
+				currentOrder,
+				newOrderPosition
+			);
+			search[condition] = currentOrder;
 		} else {
 			search['gt'] = currentOrder;
 		}
@@ -104,49 +114,66 @@ export class EditTripService {
 		});
 	}
 
-	async reorderDayActivity(dto: ReorderDto) {
-		const updateMany = await this.prisma.tripDayActivity.updateMany({
-			where: {
-				tripDayId: dto.tripDayId,
-				order: { gt: dto.order },
-			},
-			data: {
-				order: {
-					decrement: 1,
-				},
-			},
-		});
+	greaterOrLowerIndex(currentOrder: number, newOrderPosition: number) {
+		return newOrderPosition > currentOrder ? 'lt' : 'gt';
 	}
 
-	// return await this.prisma.tripDay.findUnique({
-	// 	where: {
-	// 		id: dto.tripDayId,
-	// 	},
-	// 	include: {
-	// 		tripDayActivities: {
-	// 			include: {
-	// 				accommodation: {
-	// 					include: {
-	// 						location: true,
-	// 					},
-	// 				},
-	// 				travelEvent: {
-	// 					include: {
-	// 						destinationLocation: true,
-	// 						originLocation: true,
-	// 					},
-	// 				},
-	// 				dayActivity: {
-	// 					include: {
-	// 						activity: {
-	// 							include: {
-	// 								location: true,
-	// 							},
-	// 						},
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// });
+	async reorderDayActivity(dto: ReorderDto) {
+		const currActivity = await this.prisma.tripDayActivity.findUniqueOrThrow({
+			where: {
+				id: dto.tripDayActivityId,
+			},
+		});
+
+		const prismaCondition = this.greaterOrLowerIndex(
+			currActivity.order,
+			dto.newOrder
+		);
+		console.log('current Order', currActivity.order);
+		console.log('New Order', dto.newOrder);
+
+		if (prismaCondition === 'gt') {
+			const update = await this.prisma.tripDayActivity.updateMany({
+				where: {
+					tripDayId: dto.tripDayId,
+					order: { gte: dto.newOrder, lt: currActivity.order },
+				},
+				data: {
+					order: {
+						increment: 1,
+					},
+				},
+			});
+			console.log('Updated gt function called $$$$$$$$$$', update);
+			await this.prisma.tripDayActivity.update({
+				where: {
+					id: dto.tripDayActivityId,
+				},
+				data: {
+					order: dto.newOrder,
+				},
+			});
+		} else {
+			const update = await this.prisma.tripDayActivity.updateMany({
+				where: {
+					tripDayId: dto.tripDayId,
+					order: { lte: dto.newOrder, gt: currActivity.order },
+				},
+				data: {
+					order: {
+						decrement: 1,
+					},
+				},
+			});
+			console.log('Updated lt function called $$$$$$$$$$', update);
+			await this.prisma.tripDayActivity.update({
+				where: {
+					id: dto.tripDayActivityId,
+				},
+				data: {
+					order: dto.newOrder,
+				},
+			});
+		}
+	}
 }
