@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Put, Get, Param } from '@nestjs/common';
+import {
+	Controller,
+	Post,
+	Body,
+	Put,
+	Get,
+	Param,
+	Delete,
+} from '@nestjs/common';
 import { TripService } from './trip.service';
 import { TripDto, tripIdDto, UpdateTripDto } from './dto';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
@@ -37,7 +45,7 @@ export class TripController {
 		return this.editTripService.addActivity(addActivityDto);
 	}
 
-	@Post('deleteEvent')
+	@Delete('deleteEvent')
 	deleteEvent(@Body() deleteDto: DeleteDto) {
 		return this.editTripService.deleteActivity(deleteDto);
 	}
