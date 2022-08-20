@@ -67,7 +67,6 @@ export class TripDto {
 		origin: LocationDto;
 		destination: LocationDto;
 		departure: Date;
-		arrival: Date;
 		tripId?: string;
 	}[];
 }

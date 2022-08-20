@@ -12,9 +12,18 @@ export class AddActivityDto {
 	@IsOptional()
 	@IsNumber()
 	time?: Date;
+
+	@IsOptional()
+	@IsNumber()
+	order?: number;
 }
 
 export class DeleteDto {
 	@IsString()
 	id: string;
+}
+
+export class ReorderDto {
+	order: number;
+	tripDayId: string;
 }
