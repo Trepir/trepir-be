@@ -81,6 +81,7 @@ export class ActivityDto {
 	location: LocationDto;
 }
 
+//also for get
 export class FavoriteActivityDto {
 	@IsOptional()
 	@IsString()
