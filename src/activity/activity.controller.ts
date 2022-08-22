@@ -4,6 +4,7 @@ import {
 	ActivityDto,
 	FavoriteActivityDto,
 	ActivityByCoordinatesDto,
+	InitialFavoriteActivityDto,
 } from './dto';
 
 @Controller('activity')
@@ -20,10 +21,18 @@ export class ActivityController {
 		return this.activityService.all();
 	}
 
-	// @Get('')
+	@Get('favoriteActivities')
+	favoriteActivities(@Body() dto: FavoriteActivityDto) {
+		return this.activityService.favoriteActivities(dto);
+	}
+
 	@Post('favorite')
 	favorite(@Body() dto: FavoriteActivityDto) {
 		return this.activityService.favorite(dto);
+	}
+	@Post('initialFavoriteActivities')
+	initialFavoriteActivities(@Body() dto: InitialFavoriteActivityDto) {
+		return this.activityService.initialFavoriteActivities(dto);
 	}
 	@Post('coordinates')
 	coordinates(@Body() dto: ActivityByCoordinatesDto) {
