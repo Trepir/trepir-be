@@ -84,68 +84,53 @@ export class ActivityService {
 
 	async favorite(dto: FavoriteActivityDto) {
 		//connecting uid from front end to firebase id
-		const currentUser = await this.prisma.user.findUniqueOrThrow({
+		const currentUser = await this.prisma.user.findUnique({
 			where: {
 				uid: dto.uid,
 			},
 		});
 
-		// const test = await this.prisma.user.update({
-		// 	where: { id: currentUser.id },
-		// 	data: {
-		// 		favoriteActivities: {
-		// 			connectOrCreate: {
-		// 				where: { activityId: dto.activityId },
-		// 				create: {
-		// 					user: {
-		// 						connect: {
-		// 							id: currentUser.id,
-		// 						},
-		// 					},
-		// 					activity: {
-		// 						connect: {
-		// 							//connect activity schema Id to dto id
-		// 							id: dto.activityId,
-		// 						},
-		// 					},
-		// 					trip: {
-		// 						connect: {
-		// 							//connect trip schema Id to dto id
-		// 							id: dto.tripId,
-		// 						},
-		// 					},
-		// 				},
-		// 			},
-		// 		},
-		// 	},
-		// });
-
-		// if (dto.tripId) {
-		const favoriteActivity = await this.prisma.favoriteActivity.create({
-			data: {
-				user: {
-					connect: {
-						//connect userid to dto id
-						id: currentUser.id,
-					},
-				},
-				activity: {
-					connect: {
-						//connect activity schema Id to dto id
-						id: dto.activityId,
-					},
-				},
-				trip: dto.tripId
-					? {
-							connect: {
-								//connect trip schema Id to dto id
-								id: dto.tripId,
-							},
-					  }
-					: {},
+		const unfavorite = await this.prisma.favoriteActivity.findFirst({
+			where: {
+				userId: currentUser.id,
+				activityId: dto.activityId,
 			},
 		});
-		return favoriteActivity;
+		if (unfavorite) {
+			await this.prisma.favoriteActivity.deleteMany({
+				where: {
+					userId: currentUser.id,
+					activityId: dto.activityId,
+				},
+			});
+			return unfavorite;
+		} else {
+			const favoriteActivity = await this.prisma.favoriteActivity.create({
+				data: {
+					user: {
+						connect: {
+							//connect userid to dto id
+							id: currentUser.id,
+						},
+					},
+					activity: {
+						connect: {
+							//connect activity schema Id to dto id
+							id: dto.activityId,
+						},
+					},
+					trip: dto.tripId
+						? {
+								connect: {
+									//connect trip schema Id to dto id
+									id: dto.tripId,
+								},
+						  }
+						: {},
+				},
+			});
+			return favoriteActivity;
+		}
 		// } else {
 		// 	const favoriteActivity = await this.prisma.favoriteActivity.create({
 		// 		data: {

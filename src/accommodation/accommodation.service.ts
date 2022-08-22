@@ -138,3 +138,6 @@ export class AccommodationService {
 		});
 	}
 }
+
+//update accommodation: check the state (check in or out)
+//connect with the tripday activities table and update the day
