@@ -145,6 +145,7 @@ model TravelEvent {
   destinationLocationId String 
   destinationLocation Location @relation("travelDestination",fields:[destinationLocationId], references: [id], onDelete: Cascade)
   type TravelType
+  info String?
   departure DateTime
   eventType EventType @default(TravelEvent)
   tripDayActivityId String? @unique
