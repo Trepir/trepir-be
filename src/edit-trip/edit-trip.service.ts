@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AddActivityDto, DeleteDto, ReorderDto } from './dto';
 
 @Injectable()
 export class EditTripService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private accommodationService: AccommodationService
+	) {}
 	async addActivity(dto: AddActivityDto) {
 		const currDay = await this.prisma.tripDay.findUnique({
 			where: {
@@ -47,7 +51,7 @@ export class EditTripService {
 		});
 
 		return !dto.order
-			? newActivity
+			? await this.accommodationService.getFullDay(currDay.id)
 			: this.reorderDayActivity({
 					tripDayActivityId: newActivity.id,
 					newOrder: dto.order,
@@ -175,5 +179,6 @@ export class EditTripService {
 				},
 			});
 		}
+		return this.accommodationService.getFullDay(dto.tripDayId);
 	}
 }

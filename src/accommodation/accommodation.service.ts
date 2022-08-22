@@ -104,10 +104,14 @@ export class AccommodationService {
 				},
 			},
 		});
+		return await this.getFullDay(currentTripDay.id);
 
 		//find the day that corresponds to our trip id and our desired specific day within that trip
+	}
+
+	async getFullDay(tripDayId: string) {
 		return await this.prisma.tripDay.findUnique({
-			where: { id: currentTripDay.id },
+			where: { id: tripDayId },
 
 			include: {
 				tripDayActivities: {
