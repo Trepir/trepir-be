@@ -110,4 +110,50 @@ export class TravelEventService {
 			return updatedTravelEvent;
 		}
 	}
+	async updateTravelEvent(dto: UpdateTravelEventDto) {
+		if (dto.departure) {
+			await this.prisma.travelEvent.delete({
+				where: {
+					id: dto.travelEventId,
+				},
+			});
+			const newEvent = await this.addTravelEvent({
+				tripId: dto.tripId,
+				departure: dto.departure,
+				travelType: dto.travelType,
+				origin: dto.origin,
+				destination: dto.destination,
+			});
+			return newEvent;
+		} else {
+			const updatedTravelEvent = await this.prisma.travelEvent.update({
+				where: {
+					id: dto.travelEventId,
+				},
+				data: {
+					destinationLocation: {
+						connectOrCreate: {
+							where: { googleId: dto.destination.googleId },
+
+							create: {
+								...dto.destination,
+							},
+						},
+					},
+					originLocation: {
+						connectOrCreate: {
+							where: { googleId: dto.origin.googleId },
+
+							create: {
+								...dto.origin,
+							},
+						},
+					},
+					info: dto.info,
+					type: dto.travelType,
+				},
+			});
+			return updatedTravelEvent;
+		}
+	}
 }
