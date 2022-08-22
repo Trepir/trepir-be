@@ -65,14 +65,9 @@ tripDayId String
 tripDay TripDay @relation(fields: [tripDayId], references: [id], onDelete: Cascade)
 order Int
 
-dayActivity DayActivity?
-
-accommodation Accommodation? 
-
+dayActivity DayActivity? 
 travelEvent TravelEvent?
-
-
-
+accommodation Accommodation? 
 }
 
 
@@ -103,11 +98,14 @@ model FavoriteActivity {
 }
 
 model Accommodation {
-  id String @id @default(cuid())
+  id String @id @default(cuid()) 
   createdAt DateTime @default(now())
   date DateTime
   state AccommodationState
   eventType EventType @default(Accommodation)
+  selfRelation Accommodation? @relation("AccommodationPair")
+  accommodationPairId String? @unique
+  accommodationPair Accommodation? @relation("AccommodationPair", fields: [accommodationPairId], references: [id], onDelete: Cascade)
   locationId String 
   location Location @relation(fields:[locationId], references: [id], onDelete: Cascade)
   tripDayActivityId String? @unique
@@ -145,6 +143,7 @@ model TravelEvent {
   destinationLocationId String 
   destinationLocation Location @relation("travelDestination",fields:[destinationLocationId], references: [id], onDelete: Cascade)
   type TravelType
+  info String?
   departure DateTime
   eventType EventType @default(TravelEvent)
   tripDayActivityId String? @unique

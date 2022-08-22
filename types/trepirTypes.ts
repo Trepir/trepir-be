@@ -89,6 +89,7 @@ export type Accommodation = {
 	eventType: EventType;
 	locationId: string;
 	tripDayActivityId: string | null;
+	accommodationPairId: string | null;
 };
 
 /**
