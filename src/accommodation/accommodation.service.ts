@@ -42,7 +42,7 @@ export class AccommodationService {
 			'CheckOut',
 			accommodationDto
 		);
-		return { accommodation: [checkIn, checkOut] };
+		return [checkIn, checkOut];
 	}
 
 	//GET AN ENTRY ON TRIP DAY (list of all days of all trips with an activity array)
