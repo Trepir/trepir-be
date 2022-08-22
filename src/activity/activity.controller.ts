@@ -20,6 +20,7 @@ export class ActivityController {
 		return this.activityService.all();
 	}
 
+	// @Get('')
 	@Post('favorite')
 	favorite(@Body() dto: FavoriteActivityDto) {
 		return this.activityService.favorite(dto);
