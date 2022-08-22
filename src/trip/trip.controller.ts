@@ -8,12 +8,17 @@ import {
 	Delete,
 } from '@nestjs/common';
 import { TripService } from './trip.service';
-import { TripDto, tripIdDto, UpdateTripDto } from './dto';
+import { TripDto, UpdateTripDto } from './dto';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { AccommodationDto } from 'src/accommodation/dto';
 import { TravelEventDto } from 'src/travelEvent/dto';
 import { TravelEventService } from 'src/travelEvent/travelEvent.service';
-import { AddActivityDto, DeleteDto, ReorderDto } from 'src/edit-trip/dto';
+import {
+	ActivityDayChangeDto,
+	AddActivityDto,
+	DeleteDto,
+	ReorderDto,
+} from 'src/edit-trip/dto';
 import { EditTripService } from 'src/edit-trip/edit-trip.service';
 
 @Controller('trip')
@@ -45,6 +50,11 @@ export class TripController {
 		return this.editTripService.addActivity(addActivityDto);
 	}
 
+	@Put('activityChangeDay')
+	activityChangeDay(@Body() dto: ActivityDayChangeDto) {
+		return this.editTripService.activityChangeDay(dto);
+	}
+
 	@Delete('deleteEvent')
 	deleteEvent(@Body() deleteDto: DeleteDto) {
 		return this.editTripService.deleteActivity(deleteDto);
@@ -55,7 +65,7 @@ export class TripController {
 	}
 
 	@Put('reorderDay')
-	reorderDayActiviy(@Body() dto: ReorderDto) {
+	reorderDayActivity(@Body() dto: ReorderDto) {
 		return this.editTripService.reorderDayActivity(dto);
 	}
 }
