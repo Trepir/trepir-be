@@ -147,6 +147,13 @@ export class ActivityService {
 			where: {
 				userId: currentUser.id,
 			},
+			include: {
+				activity: {
+					include: {
+						location: true,
+					},
+				},
+			},
 		});
 		// console.log('getFavorites():  ', favoriteActivities);
 

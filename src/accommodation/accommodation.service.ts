@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { AccommodationState } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AccommodationDto } from './dto/accommodation.dto';
+import {
+	AccommodationDto,
+	UpdateAccommodationDto,
+} from './dto/accommodation.dto';
 
 @Injectable()
 export class AccommodationService {
@@ -174,6 +177,24 @@ export class AccommodationService {
 								originLocation: true,
 								destinationLocation: true,
 							},
+						},
+					},
+				},
+			},
+		});
+	}
+	async updateAccommodation(dto: UpdateAccommodationDto) {
+		await this.prisma.accommodation.update({
+			where: {
+				id: dto.tripDayActivityId,
+			},
+			data: {
+				location: {
+					connectOrCreate: {
+						where: { googleId: dto.location.googleId },
+
+						create: {
+							...dto.location,
 						},
 					},
 				},

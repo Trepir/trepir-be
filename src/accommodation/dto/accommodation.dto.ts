@@ -32,3 +32,25 @@ export class AccommodationDto {
 	@IsOptional()
 	accommodationPairId?: string;
 }
+
+export class UpdateAccommodationDto {
+	@IsString()
+	@IsNotEmpty()
+	tripDayActivityId: string;
+
+	@IsNotEmpty()
+	@IsString()
+	state: string;
+
+	@IsOptional()
+	@IsDateString()
+	startDate: Date;
+
+	@IsNotEmpty()
+	@IsOptional()
+	endDate: Date;
+
+	@IsOptional()
+	@IsObject()
+	location: LocationDto;
+}
