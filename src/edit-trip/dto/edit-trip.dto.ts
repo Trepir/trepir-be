@@ -1,3 +1,4 @@
+import { DayActivity } from '@prisma/client';
 import { IsNotEmpty, IsString, IsOptional, IsNumber } from 'class-validator';
 
 export class AddActivityDto {
@@ -30,6 +31,24 @@ export class ReorderDto {
 	@IsString()
 	@IsNotEmpty()
 	tripDayId: string;
+	@IsString()
+	@IsNotEmpty()
+	tripDayActivityId: string;
+}
+
+export class ActivityDayChangeDto {
+	@IsString()
+	@IsNotEmpty()
+	activityId: string;
+	@IsNotEmpty()
+	@IsNumber()
+	newOrder: number;
+	@IsString()
+	@IsNotEmpty()
+	newTripDayId: string;
+	@IsString()
+	@IsNotEmpty()
+	previousTripDayId: string;
 	@IsString()
 	@IsNotEmpty()
 	tripDayActivityId: string;

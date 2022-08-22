@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AddActivityDto, DeleteDto, ReorderDto } from './dto';
+import {
+	ActivityDayChangeDto,
+	AddActivityDto,
+	DeleteDto,
+	ReorderDto,
+} from './dto';
 
 @Injectable()
 export class EditTripService {
@@ -50,7 +55,7 @@ export class EditTripService {
 			},
 		});
 
-		return !dto.order
+		return !dto.order && dto.order !== 0
 			? await this.accommodationService.getFullDay(currDay.id)
 			: this.reorderDayActivity({
 					tripDayActivityId: newActivity.id,
@@ -68,7 +73,7 @@ export class EditTripService {
 				},
 			});
 
-			const updateMany = await this.prisma.tripDayActivity.updateMany({
+			await this.prisma.tripDayActivity.updateMany({
 				where: {
 					tripDayId: eventToDelete.tripDayId,
 					order: { gt: eventToDelete.order },
@@ -80,11 +85,16 @@ export class EditTripService {
 				},
 			});
 
-			console.log('UpdateMany()  ', updateMany);
+			console.log('Delete reorder( -1)');
 
 			const deleteEvent = await this.prisma.tripDayActivity.delete({
 				where: {
 					id: dto.id,
+				},
+				include: {
+					dayActivity: true,
+					accommodation: true,
+					travelEvent: true,
 				},
 			});
 
@@ -180,5 +190,20 @@ export class EditTripService {
 			});
 		}
 		return this.accommodationService.getFullDay(dto.tripDayId);
+	}
+
+	async activityChangeDay(dto: ActivityDayChangeDto) {
+		const deleted = await this.deleteActivity({ id: dto.tripDayActivityId });
+		this.addActivity({
+			tripDayId: dto.newTripDayId,
+			activityId: dto.activityId,
+			order: dto.newOrder,
+			time: deleted.dayActivity?.time,
+		});
+		const response = [
+			await this.accommodationService.getFullDay(dto.previousTripDayId),
+			await this.accommodationService.getFullDay(dto.newTripDayId),
+		];
+		return response;
 	}
 }
