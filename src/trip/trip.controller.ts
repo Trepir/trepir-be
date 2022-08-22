@@ -10,7 +10,10 @@ import {
 import { TripService } from './trip.service';
 import { TripDto, UpdateTripDto } from './dto';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
-import { AccommodationDto } from 'src/accommodation/dto';
+import {
+	AccommodationDto,
+	UpdateAccommodationDto,
+} from 'src/accommodation/dto';
 import { TravelEventDto } from 'src/travelEvent/dto';
 import { TravelEventService } from 'src/travelEvent/travelEvent.service';
 import {
@@ -67,5 +70,10 @@ export class TripController {
 	@Put('reorderDay')
 	reorderDayActivity(@Body() dto: ReorderDto) {
 		return this.editTripService.reorderDayActivity(dto);
+	}
+
+	@Put('updateAccommodation')
+	updateAccommodation(@Body() dto: UpdateAccommodationDto) {
+		return this.accommodationService.updateAccommodation(dto);
 	}
 }
