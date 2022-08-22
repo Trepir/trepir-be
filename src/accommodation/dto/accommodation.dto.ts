@@ -54,3 +54,25 @@ export class UpdateAccommodationDto {
 	@IsObject()
 	location: LocationDto;
 }
+
+export class UpdateAccommodationDto {
+	@IsString()
+	@IsNotEmpty()
+	tripDayActivityId: string;
+
+	@IsNotEmpty()
+	@IsString()
+	state: string;
+
+	@IsOptional()
+	@IsDateString()
+	startDate: Date;
+
+	@IsNotEmpty()
+	@IsOptional()
+	endDate: Date;
+
+	@IsOptional()
+	@IsObject()
+	location: LocationDto;
+}
