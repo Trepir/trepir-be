@@ -26,8 +26,9 @@ export class AccommodationService {
 			include: { tripDay: true },
 		});
 
+		console.log(currentTrip);
 		//create accomodation for start date / checkin
-		await this.createOneAccommodation(
+		const checkIn = await this.createOneAccommodation(
 			currentTrip.startDate,
 			accommodationDto.startDate,
 			'CheckIn',
@@ -35,12 +36,13 @@ export class AccommodationService {
 		);
 		//create accomodation for end date / checkout
 		console.log('Checkout log');
-		await this.createOneAccommodation(
+		const checkOut = await this.createOneAccommodation(
 			currentTrip.startDate,
 			accommodationDto.endDate,
 			'CheckOut',
 			accommodationDto
 		);
+		return { accommodation: [checkIn, checkOut] };
 	}
 
 	//GET AN ENTRY ON TRIP DAY (list of all days of all trips with an activity array)
@@ -76,7 +78,7 @@ export class AccommodationService {
 		);
 		console.log('currentTripDay () =', currentTripDay);
 
-		const newAccommodation = await this.prisma.tripDayActivity.create({
+		await this.prisma.tripDayActivity.create({
 			data: {
 				tripDay: {
 					//connecting the trip id of the tripDay table (so id = day of the trip) with our new trip activity
@@ -102,6 +104,37 @@ export class AccommodationService {
 				},
 			},
 		});
-		return newAccommodation;
+
+		//find the day that corresponds to our trip id and our desired specific day within that trip
+		return await this.prisma.tripDay.findUnique({
+			where: { id: currentTripDay.id },
+
+			include: {
+				tripDayActivities: {
+					include: {
+						accommodation: {
+							include: {
+								location: true,
+							},
+						},
+						dayActivity: {
+							include: {
+								activity: {
+									include: {
+										location: true,
+									},
+								},
+							},
+						},
+						travelEvent: {
+							include: {
+								originLocation: true,
+								destinationLocation: true,
+							},
+						},
+					},
+				},
+			},
+		});
 	}
 }
