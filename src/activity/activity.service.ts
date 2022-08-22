@@ -6,6 +6,7 @@ import {
 	ActivityDto,
 	FavoriteActivityDto,
 	ActivityByCoordinatesDto,
+	InitialFavoriteActivityDto,
 } from './dto';
 
 @Injectable()
@@ -103,6 +104,7 @@ export class ActivityService {
 					activityId: dto.activityId,
 				},
 			});
+			// console.log('unfavorite():  ', unfavorite);
 			return unfavorite;
 		} else {
 			const favoriteActivity = await this.prisma.favoriteActivity.create({
@@ -129,26 +131,35 @@ export class ActivityService {
 						: {},
 				},
 			});
+			// console.log('favorite():  ', favoriteActivity);
+
 			return favoriteActivity;
 		}
-		// } else {
-		// 	const favoriteActivity = await this.prisma.favoriteActivity.create({
-		// 		data: {
-		// 			user: {
-		// 				connect: {
-		// 					//connect userid to dto id
-		// 					id: currentUser.id,
-		// 				},
-		// 			},
-		// 			activity: {
-		// 				connect: {
-		// 					//connect activity schema Id to dto id
-		// 					id: dto.activityId,
-		// 				},
-		// 			},
-		// 		},
-		// 	});
-		// 	return favoriteActivity;
-		// }
+	}
+	//get
+	async favoriteActivities(dto: FavoriteActivityDto) {
+		const currentUser = await this.prisma.user.findUniqueOrThrow({
+			where: {
+				uid: dto.uid,
+			},
+		});
+		const favoriteActivities = await this.prisma.favoriteActivity.findMany({
+			where: {
+				userId: currentUser.id,
+			},
+		});
+		// console.log('getFavorites():  ', favoriteActivities);
+
+		return favoriteActivities;
+	}
+
+	async initialFavoriteActivities(dto: InitialFavoriteActivityDto) {
+		const addToFavs = dto.activityId.forEach(async (act) => {
+			return await this.favorite({ ...dto, activityId: act });
+		});
+		// console.log('Addtofavs', addToFavs);
+		const response = this.favoriteActivities({ uid: dto.uid });
+		// console.log('response', response);
+		return response;
 	}
 }
