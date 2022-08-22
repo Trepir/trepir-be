@@ -28,7 +28,7 @@ export class TripController {
 	create(@Body() tripDto: TripDto) {
 		return this.tripService.create(tripDto);
 	}
-	@Put('updateTrip')
+	@Put('updateTripInfo')
 	updateTrip(@Body() tripDto: UpdateTripDto) {
 		return this.tripService.updateTrip(tripDto);
 	}

@@ -82,9 +82,21 @@ export class ActivityDto {
 }
 
 export class FavoriteActivityDto {
+	@IsOptional()
+	@IsString()
+	activityId?: string;
 	@IsNotEmpty()
 	@IsString()
-	activityId: string;
+	uid: string;
+	@IsOptional()
+	@IsString()
+	tripId?: string;
+}
+
+export class InitialFavoriteActivityDto {
+	@IsNotEmpty()
+	@IsArray()
+	activityId?: string[];
 	@IsNotEmpty()
 	@IsString()
 	uid: string;
