@@ -146,7 +146,6 @@ export class AccommodationService {
 				accommodation: true,
 			},
 		});
-		return await this.getFullDay(currentTripDay.id);
 
 		//find the day that corresponds to our trip id and our desired specific day within that trip
 	}
