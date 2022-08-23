@@ -23,6 +23,8 @@ import {
 	ReorderDto,
 } from 'src/edit-trip/dto';
 import { EditTripService } from 'src/edit-trip/edit-trip.service';
+import { DeleteShareDto, ShareTripDto } from 'src/shared-trip/dto';
+import { SharedTripService } from 'src/shared-trip/shared-trip.service';
 
 @Controller('trip')
 export class TripController {
@@ -30,7 +32,8 @@ export class TripController {
 		private tripService: TripService,
 		private accommodationService: AccommodationService,
 		private travelEventService: TravelEventService,
-		private editTripService: EditTripService
+		private editTripService: EditTripService,
+		private sharedTripService: SharedTripService
 	) {}
 	@Post('create')
 	create(@Body() tripDto: TripDto) {
@@ -80,5 +83,15 @@ export class TripController {
 	@Put('updateTravelEvent')
 	updateTravelEvent(@Body() dto: UpdateTravelEventDto) {
 		return this.travelEventService.updateTravelEvent(dto);
+	}
+
+	@Post('share')
+	share(@Body() dto: ShareTripDto) {
+		return this.sharedTripService.share(dto);
+	}
+
+	@Delete('unshareTrip')
+	unshareTrip(@Body() dto: DeleteShareDto) {
+		return this.sharedTripService.unshareTrip(dto);
 	}
 }
