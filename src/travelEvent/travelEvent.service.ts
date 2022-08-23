@@ -26,7 +26,7 @@ export class TravelEventService {
 			travelEventDto.tripId
 		);
 		//CREATION OF A NEW TRIP ACTIVITY of travel event type and inside dynamycally creating the travel event activity
-		const newTravelEvent = await this.prisma.tripDayActivity.create({
+		await this.prisma.tripDayActivity.create({
 			data: {
 				tripDay: {
 					connect: {
@@ -62,7 +62,7 @@ export class TravelEventService {
 				},
 			},
 		});
-		return newTravelEvent;
+		return await this.accommodationService.getFullDay(currentTripDay.id);
 	}
 	async updateTravelEvent(dto: UpdateTravelEventDto) {
 		if (dto.departure) {

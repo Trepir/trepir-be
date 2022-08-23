@@ -1,10 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AddActivityDto, DeleteDto, ReorderDto } from './dto';
+import {
+	ActivityDayChangeDto,
+	AddActivityDto,
+	DeleteDto,
+	ReorderDto,
+} from './dto';
 
 @Injectable()
 export class EditTripService {
-	constructor(private prisma: PrismaService) {}
+	constructor(
+		private prisma: PrismaService,
+		private accommodationService: AccommodationService
+	) {}
 	async addActivity(dto: AddActivityDto) {
 		const currDay = await this.prisma.tripDay.findUnique({
 			where: {
@@ -46,8 +55,8 @@ export class EditTripService {
 			},
 		});
 
-		return !dto.order
-			? newActivity
+		return !dto.order && dto.order !== 0
+			? await this.accommodationService.getFullDay(currDay.id)
 			: this.reorderDayActivity({
 					tripDayActivityId: newActivity.id,
 					newOrder: dto.order,
@@ -55,39 +64,95 @@ export class EditTripService {
 			  });
 	}
 
+	async findTripDayActivity(id: string) {
+		console.log('findTripDayActivity() ');
+		return await this.prisma.tripDayActivity.findFirst({
+			where: {
+				id: id,
+			},
+			include: {
+				accommodation: {
+					include: {
+						accommodationPair: true,
+					},
+				},
+			},
+		});
+	}
+
 	async deleteActivity(dto: DeleteDto) {
 		try {
 			console.log('deleteActivity()');
-			const eventToDelete = await this.prisma.tripDayActivity.findFirst({
-				where: {
-					id: dto.id,
-				},
-			});
+			const response = [];
+			const eventToDelete = await this.findTripDayActivity(dto.id);
 
-			const updateMany = await this.prisma.tripDayActivity.updateMany({
-				where: {
-					tripDayId: eventToDelete.tripDayId,
-					order: { gt: eventToDelete.order },
-				},
-				data: {
-					order: {
-						decrement: 1,
-					},
-				},
-			});
+			if (eventToDelete?.accommodation) {
+				console.log('event to delete is accommodation');
+				const deletePair = await this.findTripDayActivity(
+					eventToDelete.accommodation.accommodationPair.tripDayActivityId
+				);
 
-			console.log('UpdateMany()  ', updateMany);
+				const deletedActivity = await this.deleteOneActivity(
+					deletePair.accommodation.tripDayActivityId,
+					deletePair.tripDayId,
+					deletePair.order
+				);
+				response.push(deletedActivity);
+			}
 
-			const deleteEvent = await this.prisma.tripDayActivity.delete({
-				where: {
-					id: dto.id,
-				},
-			});
+			const deleteEvent = await this.deleteOneActivity(
+				dto.id,
+				eventToDelete.tripDayId,
+				eventToDelete.order
+			);
 
-			return deleteEvent;
+			response.push(deleteEvent);
+
+			return response;
 		} catch (e) {
 			console.log(e);
 		}
+	}
+
+	async deleteOneActivity(id: string, tripDayId: string, order: number) {
+		console.log('deleteOneActivity()');
+		await this.updateActivitiesOnDelete(tripDayId, order);
+		await this.deleteTripDayActivity(id);
+
+		return await this.accommodationService.getFullDay(tripDayId);
+	}
+
+	async deleteTripDayActivity(id: string) {
+		console.log('deleteTripDayActivity() ', id);
+		await this.findTripDayActivity(id);
+
+		await this.prisma.tripDayActivity.delete({
+			where: {
+				id: id,
+			},
+			include: {
+				dayActivity: true,
+				accommodation: true,
+				travelEvent: true,
+			},
+		});
+	}
+
+	async updateActivitiesOnDelete(tripDayId: string, order: number) {
+		console.log('updateActivitiesOnDelete()');
+
+		await this.prisma.tripDayActivity.updateMany({
+			where: {
+				tripDayId: tripDayId,
+				order: { gt: order },
+			},
+			data: {
+				order: {
+					decrement: 1,
+				},
+			},
+		});
+		return;
 	}
 
 	async findActivitiesToUpdate(
@@ -175,5 +240,21 @@ export class EditTripService {
 				},
 			});
 		}
+		return this.accommodationService.getFullDay(dto.tripDayId);
+	}
+
+	async activityChangeDay(dto: ActivityDayChangeDto) {
+		const deleted = await this.deleteActivity({ id: dto.tripDayActivityId });
+		this.addActivity({
+			tripDayId: dto.newTripDayId,
+			activityId: dto.activityId,
+			order: dto.newOrder,
+			time: deleted[0].dayActivity?.time,
+		});
+		const response = [
+			await this.accommodationService.getFullDay(dto.previousTripDayId),
+			await this.accommodationService.getFullDay(dto.newTripDayId),
+		];
+		return response;
 	}
 }
