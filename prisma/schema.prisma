@@ -30,10 +30,10 @@ model User {
 
 model SharedTrips {
   id String @id @default(cuid())
-  participantId String 
-  participants Trip @relation( "sharedTrip",fields: [participantId], references: [id])
   sharedTripId String 
-  sharedTrips User @relation("shared", fields: [sharedTripId], references: [id])
+  sharedTrip Trip @relation( "sharedTrip",fields: [sharedTripId], references: [id])
+  participantEmail String 
+  participant User @relation("shared", fields: [participantEmail], references: [email])
 }
 
 model Trip {
