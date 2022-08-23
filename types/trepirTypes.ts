@@ -12,6 +12,7 @@ export type User = {
 	uid: string;
 	photoUrl: string;
 	emailVerified: boolean;
+	sharedTrips?: Trip[];
 };
 
 /**
@@ -29,8 +30,19 @@ export type Trip = {
 	latitude: number;
 	longitude: number;
 	formattedAddress: string;
+	participants?: User[];
 	googleLocationName: string;
 	photoUrl: string | null;
+};
+
+/**
+ * Model SharedTrips
+ *
+ */
+export type SharedTrips = {
+	id: string;
+	participantId: string;
+	sharedTripId: string;
 };
 
 /**
@@ -51,6 +63,9 @@ export type TripDayActivity = {
 	id: string;
 	tripDayId: string;
 	order: number;
+	accommodation?: Accommodation;
+	travelEvents?: TravelEvent;
+	dayActivity?: DayActivity;
 };
 
 /**
@@ -88,6 +103,7 @@ export type Accommodation = {
 	state: AccommodationState;
 	eventType: EventType;
 	locationId: string;
+	location: Location;
 	tripDayActivityId: string | null;
 	accommodationPairId: string | null;
 };
@@ -117,7 +133,9 @@ export type Location = {
 export type TravelEvent = {
 	id: string;
 	createdAt: Date;
+	originLocation: Location;
 	originLocationId: string;
+	destinationLocation: Location;
 	destinationLocationId: string;
 	type: TravelType;
 	departure: Date;

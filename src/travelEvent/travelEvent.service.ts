@@ -64,6 +64,7 @@ export class TravelEventService {
 		});
 		return await this.accommodationService.getFullDay(currentTripDay.id);
 	}
+
 	async updateTravelEvent(dto: UpdateTravelEventDto) {
 		if (dto.departure) {
 			await this.prisma.travelEvent.delete({
