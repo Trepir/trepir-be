@@ -2,6 +2,8 @@ import {
 	ForbiddenException,
 	Injectable,
 	ImATeapotException,
+	InternalServerErrorException,
+
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SinginDto, UserDto } from './dto';
@@ -30,37 +32,42 @@ export class UserService {
 		}
 	}
 	async signin(dto: SinginDto) {
-		const user = await this.prisma.user.findUnique({
-			where: {
-				uid: dto.uid,
-			},
-			include: {
-				favoriteActivities: {
-					include: {
-						activity: {
-							include: {
-								location: true,
+		try {
+			const user = await this.prisma.user.findUnique({
+				where: {
+					uid: dto.uid,
+				},
+				include: {
+					favoriteActivities: {
+						include: {
+							activity: {
+								include: {
+									location: true,
+								},
 							},
 						},
 					},
-				},
-				sharedTrips: {
-					include: {
-						sharedTrip: true,
+					sharedTrips: {
+						include: {
+							sharedTrip: true,
+						},
 					},
-				},
-				trips: {
-					include: {
-						participants: true,
+					trips: {
+						include: {
+							participants: true,
+						},
 					},
+					activities: false,
 				},
-				activities: false,
-			},
-		});
-		if (!user) throw new ForbiddenException('Credentials incorrect');
-		//verify password??
-		delete user.uid;
-		delete user.id;
-		return user;
+			});
+			if (!user) throw new ForbiddenException('Credentials incorrect');
+			//verify password??
+			delete user.uid;
+			delete user.id;
+			return user;
+		} catch (e) {
+			console.error('error', e);
+			throw new InternalServerErrorException();
+		}
 	}
 }

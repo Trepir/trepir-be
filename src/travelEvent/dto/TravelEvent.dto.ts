@@ -54,7 +54,7 @@ export class UpdateTravelEventDto {
 	@IsString()
 	info?: string;
 
-	@IsOptional()
+	@IsNotEmpty()
 	@IsString()
 	travelEventId?: string;
 
