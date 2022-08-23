@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AccommodationState } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+
 import {
 	AccommodationDto,
 	UpdateAccommodationDto,
@@ -156,6 +157,9 @@ export class AccommodationService {
 
 			include: {
 				tripDayActivities: {
+					orderBy: {
+						order: 'asc',
+					},
 					include: {
 						accommodation: {
 							include: {
@@ -182,6 +186,7 @@ export class AccommodationService {
 			},
 		});
 	}
+
 	async updateAccommodation(dto: UpdateAccommodationDto) {
 		await this.prisma.accommodation.update({
 			where: {
