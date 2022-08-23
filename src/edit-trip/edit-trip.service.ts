@@ -209,77 +209,85 @@ export class EditTripService {
 	}
 
 	async reorderDayActivity(dto: ReorderDto) {
-		const currActivity = await this.prisma.tripDayActivity.findUniqueOrThrow({
-			where: {
-				id: dto.tripDayActivityId,
-			},
-		});
-
-		const prismaCondition = this.greaterOrLowerIndex(
-			currActivity.order,
-			dto.newOrder
-		);
-		console.log('current Order', currActivity.order);
-		console.log('New Order', dto.newOrder);
-
-		if (prismaCondition === 'gt') {
-			const update = await this.prisma.tripDayActivity.updateMany({
-				where: {
-					tripDayId: dto.tripDayId,
-					order: { gte: dto.newOrder, lt: currActivity.order },
-				},
-				data: {
-					order: {
-						increment: 1,
-					},
-				},
-			});
-			console.log('Updated gt function called $$$$$$$$$$', update);
-			await this.prisma.tripDayActivity.update({
+		try {
+			const currActivity = await this.prisma.tripDayActivity.findUniqueOrThrow({
 				where: {
 					id: dto.tripDayActivityId,
 				},
-				data: {
-					order: dto.newOrder,
-				},
 			});
-		} else {
-			const update = await this.prisma.tripDayActivity.updateMany({
-				where: {
-					tripDayId: dto.tripDayId,
-					order: { lte: dto.newOrder, gt: currActivity.order },
-				},
-				data: {
-					order: {
-						decrement: 1,
+
+			const prismaCondition = this.greaterOrLowerIndex(
+				currActivity.order,
+				dto.newOrder
+			);
+			console.log('current Order', currActivity.order);
+			console.log('New Order', dto.newOrder);
+
+			if (prismaCondition === 'gt') {
+				const update = await this.prisma.tripDayActivity.updateMany({
+					where: {
+						tripDayId: dto.tripDayId,
+						order: { gte: dto.newOrder, lt: currActivity.order },
 					},
-				},
-			});
-			console.log('Updated lt function called $$$$$$$$$$', update);
-			await this.prisma.tripDayActivity.update({
-				where: {
-					id: dto.tripDayActivityId,
-				},
-				data: {
-					order: dto.newOrder,
-				},
-			});
+					data: {
+						order: {
+							increment: 1,
+						},
+					},
+				});
+				console.log('Updated gt function called $$$$$$$$$$', update);
+				await this.prisma.tripDayActivity.update({
+					where: {
+						id: dto.tripDayActivityId,
+					},
+					data: {
+						order: dto.newOrder,
+					},
+				});
+			} else {
+				const update = await this.prisma.tripDayActivity.updateMany({
+					where: {
+						tripDayId: dto.tripDayId,
+						order: { lte: dto.newOrder, gt: currActivity.order },
+					},
+					data: {
+						order: {
+							decrement: 1,
+						},
+					},
+				});
+				console.log('Updated lt function called $$$$$$$$$$', update);
+				await this.prisma.tripDayActivity.update({
+					where: {
+						id: dto.tripDayActivityId,
+					},
+					data: {
+						order: dto.newOrder,
+					},
+				});
+			}
+			return this.accommodationService.getFullDay(dto.tripDayId);
+		} catch {
+			throw new BadRequestException('Activity not reordered');
 		}
-		return this.accommodationService.getFullDay(dto.tripDayId);
 	}
 
 	async activityChangeDay(dto: ActivityDayChangeDto) {
-		const deleted = await this.deleteActivity({ id: dto.tripDayActivityId });
-		await this.addActivity({
-			tripDayId: dto.newTripDayId,
-			activityId: dto.activityId,
-			order: dto.newOrder,
-			time: deleted[0].dayActivity?.time,
-		});
-		const response = [
-			await this.accommodationService.getFullDay(dto.previousTripDayId),
-			await this.accommodationService.getFullDay(dto.newTripDayId),
-		];
-		return response;
+		try {
+			const deleted = await this.deleteActivity({ id: dto.tripDayActivityId });
+			await this.addActivity({
+				tripDayId: dto.newTripDayId,
+				activityId: dto.activityId,
+				order: dto.newOrder,
+				time: deleted[0].dayActivity?.time,
+			});
+			const response = [
+				await this.accommodationService.getFullDay(dto.previousTripDayId),
+				await this.accommodationService.getFullDay(dto.newTripDayId),
+			];
+			return response;
+		} catch {
+			throw new BadRequestException('Activity not deleted');
+		}
 	}
 }
