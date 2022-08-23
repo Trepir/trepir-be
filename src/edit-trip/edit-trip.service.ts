@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {
@@ -15,69 +15,80 @@ export class EditTripService {
 		private accommodationService: AccommodationService
 	) {}
 	async addActivity(dto: AddActivityDto) {
-		const currDay = await this.prisma.tripDay.findUnique({
-			where: {
-				id: dto.tripDayId,
-			},
-			include: {
-				tripDayActivities: true,
-			},
-		});
-		const newActivity = await this.prisma.tripDayActivity.create({
-			data: {
-				tripDay: {
-					connect: {
-						id: dto.tripDayId,
-					},
+		try {
+			const currDay = await this.prisma.tripDay.findUnique({
+				where: {
+					id: dto.tripDayId,
 				},
-				order: currDay.tripDayActivities.length,
-				dayActivity: {
-					create: {
-						activity: {
-							connect: {
-								id: dto.activityId,
-							},
+				include: {
+					tripDayActivities: true,
+				},
+			});
+			const newActivity = await this.prisma.tripDayActivity.create({
+				data: {
+					tripDay: {
+						connect: {
+							id: dto.tripDayId,
 						},
-						time: dto.time ? new Date(dto.time) : null,
 					},
-				},
-			},
-			include: {
-				dayActivity: {
-					include: {
-						activity: {
-							include: {
-								location: true,
+					order: currDay.tripDayActivities.length,
+					dayActivity: {
+						create: {
+							activity: {
+								connect: {
+									id: dto.activityId,
+								},
 							},
+							time: dto.time ? new Date(dto.time) : null,
 						},
 					},
 				},
-			},
-		});
+				include: {
+					dayActivity: {
+						include: {
+							activity: {
+								include: {
+									location: true,
+								},
+							},
+						},
+					},
+				},
+			});
 
-		return !dto.order && dto.order !== 0
-			? await this.accommodationService.getFullDay(currDay.id)
-			: this.reorderDayActivity({
-					tripDayActivityId: newActivity.id,
-					newOrder: dto.order,
-					tripDayId: dto.tripDayId,
-			  });
+			return !dto.order && dto.order !== 0
+				? await this.accommodationService.getFullDay(currDay.id)
+				: this.reorderDayActivity({
+						tripDayActivityId: newActivity.id,
+						newOrder: dto.order,
+						tripDayId: dto.tripDayId,
+				  });
+		} catch (e) {
+			if (e == 'NotFoundError: No User found') {
+				throw new BadRequestException('incorrect user');
+			}
+			throw new BadRequestException('Activty not added');
+		}
 	}
 
 	async findTripDayActivity(id: string) {
-		console.log('findTripDayActivity() ');
-		return await this.prisma.tripDayActivity.findFirst({
-			where: {
-				id: id,
-			},
-			include: {
-				accommodation: {
-					include: {
-						accommodationPair: true,
+		try {
+			console.log('findTripDayActivity() ');
+			return await this.prisma.tripDayActivity.findFirst({
+				where: {
+					id: id,
+				},
+				include: {
+					accommodation: {
+						include: {
+							accommodationPair: true,
+						},
 					},
 				},
-			},
-		});
+			});
+		} catch (e) {
+			throw new BadRequestException('Trip day not found');
+		}
 	}
 
 	async deleteActivity(dto: DeleteDto) {
@@ -110,49 +121,63 @@ export class EditTripService {
 
 			return response;
 		} catch (e) {
-			console.log(e);
+			throw new BadRequestException('activity not deleted');
 		}
 	}
 
 	async deleteOneActivity(id: string, tripDayId: string, order: number) {
-		console.log('deleteOneActivity()');
-		await this.updateActivitiesOnDelete(tripDayId, order);
-		await this.deleteTripDayActivity(id);
+		try {
+			console.log('deleteOneActivity()');
+			await this.updateActivitiesOnDelete(tripDayId, order);
+			await this.deleteTripDayActivity(id);
 
-		return await this.accommodationService.getFullDay(tripDayId);
+			return await this.accommodationService.getFullDay(tripDayId);
+		} catch (e) {
+			if (e == 'NotFoundError: No User found') {
+				throw new BadRequestException('incorrect user');
+			}
+			throw new BadRequestException('Activity not deleted');
+		}
 	}
 
 	async deleteTripDayActivity(id: string) {
-		console.log('deleteTripDayActivity() ', id);
-		await this.findTripDayActivity(id);
+		try {
+			console.log('deleteTripDayActivity() ', id);
+			await this.findTripDayActivity(id);
 
-		await this.prisma.tripDayActivity.delete({
-			where: {
-				id: id,
-			},
-			include: {
-				dayActivity: true,
-				accommodation: true,
-				travelEvent: true,
-			},
-		});
+			await this.prisma.tripDayActivity.delete({
+				where: {
+					id: id,
+				},
+				include: {
+					dayActivity: true,
+					accommodation: true,
+					travelEvent: true,
+				},
+			});
+		} catch {
+			throw new BadRequestException('Activity not deleted');
+		}
 	}
 
 	async updateActivitiesOnDelete(tripDayId: string, order: number) {
-		console.log('updateActivitiesOnDelete()');
-
-		await this.prisma.tripDayActivity.updateMany({
-			where: {
-				tripDayId: tripDayId,
-				order: { gt: order },
-			},
-			data: {
-				order: {
-					decrement: 1,
+		try {
+			console.log('updateActivitiesOnDelete()');
+			await this.prisma.tripDayActivity.updateMany({
+				where: {
+					tripDayId: tripDayId,
+					order: { gt: order },
 				},
-			},
-		});
-		return;
+				data: {
+					order: {
+						decrement: 1,
+					},
+				},
+			});
+			return;
+		} catch {
+			throw new BadRequestException('Trip day not found');
+		}
 	}
 
 	async findActivitiesToUpdate(
