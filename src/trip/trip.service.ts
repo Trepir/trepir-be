@@ -85,6 +85,7 @@ export class TripService {
 			},
 			include: {
 				tripDay: true,
+				participants: true,
 			},
 		});
 	}

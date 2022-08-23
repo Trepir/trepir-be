@@ -10,6 +10,7 @@ import { TravelEventModule } from './travelEvent/travelEvent.module';
 import { AccommodationModule } from './accommodation/accommodation.module';
 import { EditTripService } from './edit-trip/edit-trip.service';
 import { EditTripModule } from './edit-trip/edit-trip.module';
+import { SharedTripModule } from './shared-trip/shared-trip.module';
 
 @Module({
 	imports: [
@@ -20,6 +21,7 @@ import { EditTripModule } from './edit-trip/edit-trip.module';
 		TripModule,
 		ConfigModule.forRoot({ isGlobal: true }),
 		EditTripModule,
+		SharedTripModule,
 	],
 	providers: [EditTripService],
 })

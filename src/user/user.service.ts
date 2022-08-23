@@ -35,8 +35,16 @@ export class UserService {
 						},
 					},
 				},
-				sharedTrips: true,
-				trips: true,
+				sharedTrips: {
+					include: {
+						sharedTrip: true,
+					},
+				},
+				trips: {
+					include: {
+						participants: true,
+					},
+				},
 				activities: false,
 			},
 		});
