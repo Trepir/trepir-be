@@ -20,6 +20,7 @@ model User {
   photoUrl String
   emailVerified Boolean
   trips Trip[]
+  sharedTrips SharedTrips[] @relation("shared")
   favoriteActivities FavoriteActivity[]
   activities Activity[]
   @@map("users")
@@ -27,9 +28,18 @@ model User {
 
 }
 
+model SharedTrips {
+  id String @id @default(cuid())
+  participantId String 
+  participants Trip @relation( "sharedTrip",fields: [participantId], references: [id])
+  sharedTripId String 
+  sharedTrips User @relation("shared", fields: [sharedTripId], references: [id])
+}
+
 model Trip {
   id String @id @default(cuid())
   createdAt DateTime @default(now())
+  participants SharedTrips[] @relation("sharedTrip")
   userId String 
   startDate DateTime
   endDate DateTime
