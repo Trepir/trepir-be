@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { throws } from 'assert';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { favouriteActivityDto, tripIdDto } from 'src/trip/dto';
@@ -52,7 +52,10 @@ export class ActivityService {
 
 			return activity;
 		} catch (e) {
-			console.log(e);
+			if (e == 'NotFoundError: No User found') {
+				throw new BadRequestException('incorrect user');
+			}
+			throw new BadRequestException('Activity not deleted');
 		}
 	}
 
@@ -63,110 +66,135 @@ export class ActivityService {
 		return activities;
 	}
 	async coordinates(dto: ActivityByCoordinatesDto) {
-		const activitiesInCoordinates = await this.prisma.activity.findMany({
-			where: {
-				location: {
-					longitude: {
-						lte: dto.longitudeHigh,
-						gte: dto.longitudeLow,
-					},
-					latitude: {
-						lte: dto.latitudeHigh,
-						gte: dto.latitudeLow,
+		try {
+			const activitiesInCoordinates = await this.prisma.activity.findMany({
+				where: {
+					location: {
+						longitude: {
+							lte: dto.longitudeHigh,
+							gte: dto.longitudeLow,
+						},
+						latitude: {
+							lte: dto.latitudeHigh,
+							gte: dto.latitudeLow,
+						},
 					},
 				},
-			},
-			include: {
-				location: true,
-			},
-		});
-		return activitiesInCoordinates;
+				include: {
+					location: true,
+				},
+			});
+			return activitiesInCoordinates;
+		} catch (e) {
+			throw new BadRequestException('Coordinates incorrect');
+		}
 	}
 
 	async favorite(dto: FavoriteActivityDto) {
-		//connecting uid from front end to firebase id
-		const currentUser = await this.prisma.user.findUnique({
-			where: {
-				uid: dto.uid,
-			},
-		});
+		try {
+			//connecting uid from front end to firebase id
+			const currentUser = await this.prisma.user.findUnique({
+				where: {
+					uid: dto.uid,
+				},
+			});
 
-		const unfavorite = await this.prisma.favoriteActivity.findFirst({
-			where: {
-				userId: currentUser.id,
-				activityId: dto.activityId,
-			},
-		});
-		if (unfavorite) {
-			await this.prisma.favoriteActivity.deleteMany({
+			const unfavorite = await this.prisma.favoriteActivity.findFirst({
 				where: {
 					userId: currentUser.id,
 					activityId: dto.activityId,
 				},
 			});
-			// console.log('unfavorite():  ', unfavorite);
-			return unfavorite;
-		} else {
-			const favoriteActivity = await this.prisma.favoriteActivity.create({
-				data: {
-					user: {
-						connect: {
-							//connect userid to dto id
-							id: currentUser.id,
-						},
+			if (unfavorite) {
+				await this.prisma.favoriteActivity.deleteMany({
+					where: {
+						userId: currentUser.id,
+						activityId: dto.activityId,
 					},
-					activity: {
-						connect: {
-							//connect activity schema Id to dto id
-							id: dto.activityId,
+				});
+				// console.log('unfavorite():  ', unfavorite);
+				return unfavorite;
+			} else {
+				const favoriteActivity = await this.prisma.favoriteActivity.create({
+					data: {
+						user: {
+							connect: {
+								//connect userid to dto id
+								id: currentUser.id,
+							},
 						},
+						activity: {
+							connect: {
+								//connect activity schema Id to dto id
+								id: dto.activityId,
+							},
+						},
+						trip: dto.tripId
+							? {
+									connect: {
+										//connect trip schema Id to dto id
+										id: dto.tripId,
+									},
+							  }
+							: {},
 					},
-					trip: dto.tripId
-						? {
-								connect: {
-									//connect trip schema Id to dto id
-									id: dto.tripId,
-								},
-						  }
-						: {},
-				},
-			});
-			// console.log('favorite():  ', favoriteActivity);
+				});
+				// console.log('favorite():  ', favoriteActivity);
 
-			return favoriteActivity;
+				return favoriteActivity;
+			}
+		} catch (e) {
+			if (e == 'NotFoundError: No User found') {
+				throw new BadRequestException('incorrect user');
+			}
+			throw new BadRequestException('Activity not favorited');
 		}
 	}
 	//get
 	async favoriteActivities(dto: FavoriteActivityDto) {
-		const currentUser = await this.prisma.user.findUniqueOrThrow({
-			where: {
-				uid: dto.uid,
-			},
-		});
-		const favoriteActivities = await this.prisma.favoriteActivity.findMany({
-			where: {
-				userId: currentUser.id,
-			},
-			include: {
-				activity: {
-					include: {
-						location: true,
+		try {
+			const currentUser = await this.prisma.user.findUniqueOrThrow({
+				where: {
+					uid: dto.uid,
+				},
+			});
+			const favoriteActivities = await this.prisma.favoriteActivity.findMany({
+				where: {
+					userId: currentUser.id,
+				},
+				include: {
+					activity: {
+						include: {
+							location: true,
+						},
 					},
 				},
-			},
-		});
-		// console.log('getFavorites():  ', favoriteActivities);
+			});
+			// console.log('getFavorites():  ', favoriteActivities);
 
-		return favoriteActivities;
+			return favoriteActivities;
+		} catch (e) {
+			if (e == 'NotFoundError: No User found') {
+				throw new BadRequestException('incorrect user');
+			}
+			throw new BadRequestException('Activity not favorited');
+		}
 	}
 
 	async initialFavoriteActivities(dto: InitialFavoriteActivityDto) {
-		const addToFavs = dto.activityId.forEach(async (act) => {
-			return await this.favorite({ ...dto, activityId: act });
-		});
-		// console.log('Addtofavs', addToFavs);
-		const response = this.favoriteActivities({ uid: dto.uid });
-		// console.log('response', response);
-		return response;
+		try {
+			const addToFavs = dto.activityId.forEach(async (act) => {
+				return await this.favorite({ ...dto, activityId: act });
+			});
+			// console.log('Addtofavs', addToFavs);
+			const response = this.favoriteActivities({ uid: dto.uid });
+			// console.log('response', response);
+			return response;
+		} catch (e) {
+			if (e == 'NotFoundError: No User found') {
+				throw new BadRequestException('incorrect user');
+			}
+			throw new BadRequestException('Activities not favorited');
+		}
 	}
 }
