@@ -270,7 +270,7 @@ export class EditTripService {
 
 	async activityChangeDay(dto: ActivityDayChangeDto) {
 		const deleted = await this.deleteActivity({ id: dto.tripDayActivityId });
-		this.addActivity({
+		await this.addActivity({
 			tripDayId: dto.newTripDayId,
 			activityId: dto.activityId,
 			order: dto.newOrder,
