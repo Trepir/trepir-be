@@ -84,6 +84,7 @@ export class EditTripService {
 							accommodationPair: true,
 						},
 					},
+					tripDay: true,
 				},
 			});
 		} catch (e) {
@@ -288,6 +289,67 @@ export class EditTripService {
 			return response;
 		} catch {
 			throw new BadRequestException('Activity not deleted');
+		}
+	}
+
+	async eventChangeDay(dto: ActivityDayChangeDto) {
+		try {
+			const changeEvent = await this.findTripDayActivity(dto.tripDayActivityId);
+			await this.updateActivitiesOnDelete(
+				changeEvent.tripDayId,
+				changeEvent.order
+			);
+			const newTripDayCount = await this.prisma.tripDayActivity.count({
+				where: {
+					tripDayId: dto.newTripDayId,
+				},
+			});
+
+			await this.prisma.tripDayActivity.update({
+				where: { id: changeEvent.id },
+				data: {
+					tripDay: {
+						connect: {
+							id: dto.newTripDayId,
+						},
+					},
+					order: newTripDayCount + 1,
+				},
+			});
+
+			await this.reorderDayActivity({
+				newOrder: dto.newOrder,
+				tripDayId: dto.newTripDayId,
+				tripDayActivityId: changeEvent.id,
+			});
+			console.log('Before updating dates');
+			if (dto.type === 'Accommodation') {
+				await this.prisma.accommodation.update({
+					where: {
+						tripDayActivityId: dto.tripDayActivityId,
+					},
+					data: {
+						date: new Date(dto.date),
+					},
+				});
+			}
+			if (dto.type === 'TravelEvent') {
+				await this.prisma.travelEvent.update({
+					where: {
+						tripDayActivityId: dto.tripDayActivityId,
+					},
+					data: {
+						departure: new Date(dto.date),
+					},
+				});
+			}
+
+			return [
+				await this.accommodationService.getFullDay(dto.previousTripDayId),
+				await this.accommodationService.getFullDay(dto.newTripDayId),
+			];
+		} catch (e) {
+			throw new BadRequestException('Invalid Event Id');
 		}
 	}
 }

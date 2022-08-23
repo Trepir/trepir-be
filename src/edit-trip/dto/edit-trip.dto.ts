@@ -38,8 +38,8 @@ export class ReorderDto {
 
 export class ActivityDayChangeDto {
 	@IsString()
-	@IsNotEmpty()
-	activityId: string;
+	@IsOptional()
+	activityId?: string;
 	@IsNotEmpty()
 	@IsNumber()
 	newOrder: number;
@@ -52,4 +52,11 @@ export class ActivityDayChangeDto {
 	@IsString()
 	@IsNotEmpty()
 	tripDayActivityId: string;
+
+	@IsOptional()
+	date: Date;
+
+	@IsOptional()
+	@IsString()
+	type: string;
 }

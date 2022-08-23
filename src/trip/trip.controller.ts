@@ -56,6 +56,11 @@ export class TripController {
 		return this.editTripService.addActivity(addActivityDto);
 	}
 
+	@Put('eventChangeDay')
+	eventChangeDay(@Body() dto: ActivityDayChangeDto) {
+		return this.editTripService.eventChangeDay(dto);
+	}
+
 	@Put('activityChangeDay')
 	activityChangeDay(@Body() dto: ActivityDayChangeDto) {
 		return this.editTripService.activityChangeDay(dto);
