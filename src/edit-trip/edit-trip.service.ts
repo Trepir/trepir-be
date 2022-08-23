@@ -212,6 +212,7 @@ export class EditTripService {
 	async reorderDayActivity(dto: ReorderDto) {
 		try {
 			const currActivity = await this.prisma.tripDayActivity.findUniqueOrThrow({
+
 				where: {
 					id: dto.tripDayActivityId,
 				},
@@ -350,6 +351,7 @@ export class EditTripService {
 			];
 		} catch (e) {
 			throw new BadRequestException('Invalid Event Id');
+
 		}
 	}
 }
