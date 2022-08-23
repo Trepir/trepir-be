@@ -98,31 +98,36 @@ export class TravelEventService {
 						id: dto.travelEventId,
 					},
 					data: {
-						destinationLocation: {
-							connectOrCreate: {
-								where: { googleId: dto.destination.googleId },
+						destinationLocation: dto.destination
+							? {
+									connectOrCreate: {
+										where: { googleId: dto.destination.googleId },
 
-								create: {
-									...dto.destination,
-								},
-							},
-						},
-						originLocation: {
-							connectOrCreate: {
-								where: { googleId: dto.origin.googleId },
+										create: {
+											...dto.destination,
+										},
+									},
+							  }
+							: {},
+						originLocation: dto.origin
+							? {
+									connectOrCreate: {
+										where: { googleId: dto.origin.googleId },
 
-								create: {
-									...dto.origin,
-								},
-							},
-						},
-						info: dto.info,
-						type: dto.travelType,
+										create: {
+											...dto.origin,
+										},
+									},
+							  }
+							: {},
+						info: dto.info ? dto.info : undefined,
+						type: dto.travelType ? dto.travelType : undefined,
 					},
 				});
 				return updatedTravelEvent;
 			}
 		} catch (e) {
+			console.log(e);
 			if (e == 'NotFoundError: No User found') {
 				throw new BadRequestException('incorrect user');
 			}
