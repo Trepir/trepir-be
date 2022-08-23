@@ -14,7 +14,7 @@ import {
 	AccommodationDto,
 	UpdateAccommodationDto,
 } from 'src/accommodation/dto';
-import { TravelEventDto } from 'src/travelEvent/dto';
+import { TravelEventDto, UpdateTravelEventDto } from 'src/travelEvent/dto';
 import { TravelEventService } from 'src/travelEvent/travelEvent.service';
 import {
 	ActivityDayChangeDto,
@@ -75,5 +75,10 @@ export class TripController {
 	@Put('updateAccommodation')
 	updateAccommodation(@Body() dto: UpdateAccommodationDto) {
 		return this.accommodationService.updateAccommodation(dto);
+	}
+
+	@Put('updateTravelEvent')
+	updateTravelEvent(@Body() dto: UpdateTravelEventDto) {
+		return this.travelEventService.updateTravelEvent(dto);
 	}
 }

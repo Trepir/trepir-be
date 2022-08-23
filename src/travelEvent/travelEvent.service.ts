@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AccommodationService } from 'src/accommodation/accommodation.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { TravelEventDto } from './dto';
+import { TravelEventDto, UpdateTravelEventDto } from './dto';
 
 @Injectable()
 export class TravelEventService {
@@ -57,10 +57,57 @@ export class TravelEventService {
 							},
 						},
 						departure: travelEventDto.departure,
+						info: travelEventDto.info,
 					},
 				},
 			},
 		});
 		return await this.accommodationService.getFullDay(currentTripDay.id);
+	}
+	async updateTravelEvent(dto: UpdateTravelEventDto) {
+		if (dto.departure) {
+			await this.prisma.travelEvent.delete({
+				where: {
+					id: dto.travelEventId,
+				},
+			});
+			const newEvent = await this.addTravelEvent({
+				tripId: dto.tripId,
+				departure: dto.departure,
+				travelType: dto.travelType,
+				origin: dto.origin,
+				destination: dto.destination,
+			});
+			return newEvent;
+		} else {
+			const updatedTravelEvent = await this.prisma.travelEvent.update({
+				where: {
+					id: dto.travelEventId,
+				},
+				data: {
+					destinationLocation: {
+						connectOrCreate: {
+							where: { googleId: dto.destination.googleId },
+
+							create: {
+								...dto.destination,
+							},
+						},
+					},
+					originLocation: {
+						connectOrCreate: {
+							where: { googleId: dto.origin.googleId },
+
+							create: {
+								...dto.origin,
+							},
+						},
+					},
+					info: dto.info,
+					type: dto.travelType,
+				},
+			});
+			return updatedTravelEvent;
+		}
 	}
 }
