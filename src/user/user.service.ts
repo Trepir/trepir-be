@@ -35,6 +35,7 @@ export class UserService {
 						},
 					},
 				},
+				sharedTrips: true,
 				trips: true,
 				activities: false,
 			},
