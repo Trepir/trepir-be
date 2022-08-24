@@ -212,7 +212,6 @@ export class EditTripService {
 	async reorderDayActivity(dto: ReorderDto) {
 		try {
 			const currActivity = await this.prisma.tripDayActivity.findUniqueOrThrow({
-
 				where: {
 					id: dto.tripDayActivityId,
 				},
@@ -222,8 +221,6 @@ export class EditTripService {
 				currActivity.order,
 				dto.newOrder
 			);
-			console.log('current Order', currActivity.order);
-			console.log('New Order', dto.newOrder);
 
 			if (prismaCondition === 'gt') {
 				const update = await this.prisma.tripDayActivity.updateMany({
@@ -237,7 +234,7 @@ export class EditTripService {
 						},
 					},
 				});
-				console.log('Updated gt function called $$$$$$$$$$', update);
+
 				await this.prisma.tripDayActivity.update({
 					where: {
 						id: dto.tripDayActivityId,
@@ -258,7 +255,7 @@ export class EditTripService {
 						},
 					},
 				});
-				console.log('Updated lt function called $$$$$$$$$$', update);
+
 				await this.prisma.tripDayActivity.update({
 					where: {
 						id: dto.tripDayActivityId,
@@ -269,7 +266,9 @@ export class EditTripService {
 				});
 			}
 			return this.accommodationService.getFullDay(dto.tripDayId);
-		} catch {
+		} catch (e) {
+			console.error('error', e);
+
 			throw new BadRequestException('Activity not reordered');
 		}
 	}
@@ -288,7 +287,9 @@ export class EditTripService {
 				await this.accommodationService.getFullDay(dto.newTripDayId),
 			];
 			return response;
-		} catch {
+		} catch (e) {
+			console.error('error', e);
+
 			throw new BadRequestException('Activity not deleted');
 		}
 	}
@@ -350,8 +351,8 @@ export class EditTripService {
 				await this.accommodationService.getFullDay(dto.newTripDayId),
 			];
 		} catch (e) {
+			console.error('error', e);
 			throw new BadRequestException('Invalid Event Id');
-
 		}
 	}
 }

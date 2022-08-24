@@ -6,7 +6,7 @@ import {
 	ActivityDto,
 	FavoriteActivityDto,
 	ActivityByCoordinatesDto,
-	InitialFavoriteActivityDto,
+	LinkFavoriteActivityDto,
 } from './dto';
 
 @Injectable()
@@ -19,8 +19,6 @@ export class ActivityService {
 				uid: dto.uid,
 			},
 		});
-		console.log({ ...dto.location });
-		console.log(dto);
 
 		try {
 			const activity = await this.prisma.activity.create({
@@ -181,20 +179,24 @@ export class ActivityService {
 		}
 	}
 
-	async initialFavoriteActivities(dto: InitialFavoriteActivityDto) {
+	async linkFavoriteActivities(dto: LinkFavoriteActivityDto) {
 		try {
-			const addToFavs = dto.activityId.forEach(async (act) => {
-				return await this.favorite({ ...dto, activityId: act });
+			return await this.prisma.favoriteActivity.updateMany({
+				where: {
+					id: {
+						in: dto.favoriteId,
+					},
+				},
+				data: {
+					tripId: dto.tripId,
+				},
 			});
-			// console.log('Addtofavs', addToFavs);
-			const response = this.favoriteActivities({ uid: dto.uid });
-			// console.log('response', response);
-			return response;
 		} catch (e) {
+			console.error(e);
 			if (e == 'NotFoundError: No User found') {
 				throw new BadRequestException('incorrect user');
 			}
-			throw new BadRequestException('Activities not favorited');
+			throw new BadRequestException('Activities not linked to trip');
 		}
 	}
 }

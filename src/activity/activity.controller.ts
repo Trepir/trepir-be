@@ -4,7 +4,7 @@ import {
 	ActivityDto,
 	FavoriteActivityDto,
 	ActivityByCoordinatesDto,
-	InitialFavoriteActivityDto,
+	LinkFavoriteActivityDto,
 } from './dto';
 
 @Controller('activity')
@@ -31,8 +31,8 @@ export class ActivityController {
 		return this.activityService.favorite(dto);
 	}
 	@Post('initialFavoriteActivities')
-	initialFavoriteActivities(@Body() dto: InitialFavoriteActivityDto) {
-		return this.activityService.initialFavoriteActivities(dto);
+	linkFavoriteActivities(@Body() dto: LinkFavoriteActivityDto) {
+		return this.activityService.linkFavoriteActivities(dto);
 	}
 	@Post('coordinates')
 	coordinates(@Body() dto: ActivityByCoordinatesDto) {

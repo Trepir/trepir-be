@@ -3,7 +3,6 @@ import {
 	Injectable,
 	ImATeapotException,
 	InternalServerErrorException,
-
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SinginDto, UserDto } from './dto';
@@ -60,10 +59,11 @@ export class UserService {
 					activities: false,
 				},
 			});
-			if (!user) throw new ForbiddenException('Credentials incorrect');
 			//verify password??
+
 			delete user.uid;
 			delete user.id;
+			if (!user) throw new ForbiddenException('Credentials incorrect');
 			return user;
 		} catch (e) {
 			console.error('error', e);

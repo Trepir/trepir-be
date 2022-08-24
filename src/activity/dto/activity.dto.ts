@@ -1,6 +1,7 @@
 import { Tag } from '@prisma/client';
 
 import {
+	isArray,
 	IsArray,
 	IsDate,
 	IsNotEmpty,
@@ -94,16 +95,12 @@ export class FavoriteActivityDto {
 	tripId?: string;
 }
 
-export class InitialFavoriteActivityDto {
+export class LinkFavoriteActivityDto {
 	@IsNotEmpty()
 	@IsArray()
-	activityId?: string[];
-	@IsNotEmpty()
+	favoriteId: number[];
 	@IsString()
-	uid: string;
-	@IsOptional()
-	@IsString()
-	tripId?: string;
+	tripId: string;
 }
 
 export class ActivityByCoordinatesDto {

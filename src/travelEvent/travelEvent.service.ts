@@ -72,6 +72,7 @@ export class TravelEventService {
 			if (e == 'NotFoundError: No User found') {
 				throw new BadRequestException('incorrect user');
 			}
+			console.log('travelEvent', e);
 			throw e;
 		}
 	}
