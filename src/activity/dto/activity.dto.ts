@@ -1,6 +1,7 @@
 import { Tag } from '@prisma/client';
 
 import {
+	isArray,
 	IsArray,
 	IsDate,
 	IsNotEmpty,
@@ -17,18 +18,23 @@ export class LocationDto {
 	@IsNumber()
 	@IsNotEmpty()
 	longitude: number;
-	@IsNotEmpty()
+	@IsOptional()
 	@IsString()
-	country: string;
-	@IsNotEmpty()
+	country?: string;
+	@IsOptional()
 	@IsString()
-	state: string;
+	state?: string;
 	@IsNotEmpty()
 	@IsString()
 	locationName: string;
 	@IsNotEmpty()
 	@IsString()
-	city: string;
+	formattedAddress: string;
+	@IsOptional()
+	@IsString()
+	city?: string;
+	@IsArray()
+	photoUrl: string[];
 
 	@IsOptional()
 	@IsString()
@@ -60,6 +66,10 @@ export class ActivityDto {
 	@IsString()
 	uid: string;
 
+	@IsNotEmpty()
+	@IsString()
+	imageUrl: string;
+
 	// Tags
 
 	@IsOptional()
@@ -70,4 +80,40 @@ export class ActivityDto {
 	@IsNotEmpty()
 	@IsObject()
 	location: LocationDto;
+}
+
+//also for get
+export class FavoriteActivityDto {
+	@IsOptional()
+	@IsString()
+	activityId?: string;
+	@IsNotEmpty()
+	@IsString()
+	uid: string;
+	@IsOptional()
+	@IsString()
+	tripId?: string;
+}
+
+export class LinkFavoriteActivityDto {
+	@IsNotEmpty()
+	@IsArray()
+	favoriteId: number[];
+	@IsString()
+	tripId: string;
+}
+
+export class ActivityByCoordinatesDto {
+	@IsNumber()
+	@IsNotEmpty()
+	latitudeLow: number;
+	@IsNumber()
+	@IsNotEmpty()
+	latitudeHigh: number;
+	@IsNumber()
+	@IsNotEmpty()
+	longitudeLow: number;
+	@IsNumber()
+	@IsNotEmpty()
+	longitudeHigh: number;
 }
